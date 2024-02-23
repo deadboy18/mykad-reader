@@ -1,0 +1,28 @@
+Ready to read, press EnterGeneric Smart Card Reader Interface 0
+Selecting JPN application
+Reading JPN file 1 .
+Name:           Ali Arumugam
+.
+IC:             010517070419
+Sex:            Male
+Old IC:         
+DOB:            2001-05-17
+State of birth: PULAU PINANG
+Validity Date:  2020-02-11
+Nationality:    WARGANEGARA
+Ethnic/Race:    Indian
+Religion:       Hindu
+
+Reading JPN file 2 ................
+Reading JPN file 3 .....
+Reading JPN file 4 .
+Address:
+89-7-3  BATU KUNING FLATS
+JALAN TAN SRI TEH EWE LIM
+
+11600	GEORGETOWN
+PULAU PINANG
+
+Reading JPN file 5 .
+Reading JPN file 6 .
+press Enter to end program
