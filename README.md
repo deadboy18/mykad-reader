@@ -4,32 +4,38 @@
 
 This repository is the result of extensive research into how Malaysia's national identity card actually works — how the 12-digit IC number is structured, how its hidden checksum is computed, how the embedded smart chip can be read, and why OCR is surprisingly difficult on the physical card. It's intended as a reference for developers integrating MyKad functionality, researchers studying national ID systems, and anyone curious about the math hiding inside their own IC number.
 
-Everything in this repo is either public knowledge, community-researched, or original work. No real personal data is included.
+**All information in this repository is compiled from publicly available sources.** Everything is either public knowledge, community-researched, or original work. No real personal data is included, and no insider information was used.
 
 ---
 
 ## Table of contents
 
 1. [What is MyKad?](#what-is-mykad)
-2. [What's in this repository](#whats-in-this-repository)
-3. [Quick start — where to begin](#quick-start--where-to-begin)
-4. [Repository structure](#repository-structure)
-5. [Documentation folder](#-documentation)
-6. [Tools — interactive generator and tutorial](#-mykad-generator_checksum)
-7. [OCR research and code](#-mykad-ocr)
-8. [Main project code](#-mykad-project)
-9. [Third-party samples and references](#-other-github-mykad-project-sample)
-10. [Key technical concepts](#key-technical-concepts)
-11. [Disclaimer](#disclaimer)
-12. [Privacy and responsible use](#privacy-and-responsible-use)
-13. [Credits and sources](#credits-and-sources)
-14. [License](#license)
+2. [Card variants](#card-variants)
+3. [What's in this repository](#whats-in-this-repository)
+4. [What this repo is NOT](#what-this-repo-is-not)
+5. [Quick start — where to begin](#quick-start--where-to-begin)
+6. [Repository structure](#repository-structure)
+7. [Documentation folder](#-documentation)
+8. [Tools — interactive generator and tutorial](#-mykad-generator_checksum)
+9. [OCR research and code](#-mykad_ocr)
+10. [Main project code](#-mykad-project)
+11. [Third-party samples and references](#-other-github-mykad-project-sample)
+12. [Key technical concepts](#key-technical-concepts)
+13. [Disclaimer](#disclaimer)
+14. [Privacy and responsible use](#privacy-and-responsible-use)
+15. [A note on sources and credits](#a-note-on-sources-and-credits)
+16. [Credits and sources](#credits-and-sources)
+17. [License](#license)
+18. [Feedback and contributions](#feedback-and-contributions)
 
 ---
 
 ## What is MyKad?
 
-**MyKad** (Kad Pengenalan Malaysia) is Malaysia's compulsory national identity card, issued by **JPN** (Jabatan Pendaftaran Negara — the National Registration Department) to every citizen aged 12 and above. It was introduced in September 2001, replacing the earlier laminated High-Quality Identity Card. Malaysia was the first country in the world to issue an ID card that combined a printed photograph, biometric fingerprint data, and a smart card chip.
+**MyKad** (Kad Pengenalan Malaysia) is Malaysia's compulsory national identity card, issued by **JPN** (Jabatan Pendaftaran Negara — the National Registration Department) to every citizen aged 12 and above. It was introduced in September 2001, replacing the earlier laminated High-Quality Identity Card (Kad Pengenalan Bermutu Tinggi). Malaysia was the first country in the world to issue an ID card that combined a printed photograph, biometric fingerprint data, and a smart card chip — the technology was developed locally by IRIS Corporation Berhad, a Malaysian company that also invented the world's first ePassport in 1998.
+
+The history of Malaysian ID cards goes back further still. The first identity card was issued in 1948 and was known colloquially as the "Rice Card," originally intended to help curb the communist insurgency during the Malayan Emergency. The format evolved through paper, plastic, and laminated variants over the next half-century before arriving at the current smart-chip-embedded MyKad.
 
 Every MyKad carries a **12-digit IC number** laser-engraved into the polycarbonate body. For example:
 
@@ -54,6 +60,23 @@ This repository documents all of that.
 
 ---
 
+## Card variants
+
+Malaysia issues several variants of the identity card, all sharing the same 12-digit IC number format but differing in colour, holder type, and sometimes additional chip data:
+
+| Card | Issued to | Card colour | Notes |
+|------|-----------|-------------|-------|
+| **MyKad** | Citizens aged 12+ | Blue | The standard card most references describe |
+| **MyKid** | Citizens under 12 | Pink | Same format, issued to minors |
+| **MyPR** | Permanent residents | Red | Same format |
+| **MyKAS** | Temporary residents | Green | Same format, less-tested with the checksum |
+| **MyTentera** | Military personnel | Silver | Variant with military-specific extensions |
+| **MyPolis** | Police personnel | Varies | Police-specific variant |
+
+A new generation of MyKad is planned to begin issuance in mid-2026 with a QR code feature for on-the-spot digital verification, enhanced laser engraving and holograms, and expanded biometric data. Existing cards will be gradually replaced. The 12-digit IC number format and checksum algorithm are not expected to change.
+
+---
+
 ## What's in this repository
 
 Five categories of material:
@@ -67,6 +90,18 @@ Five categories of material:
 4. **Third-party samples** — vendor driver SDKs and other open-source MyKad project snapshots for reference.
 
 5. **Historical materials** — government infographics, JPN reference documents, and visual breakdowns of the card structure.
+
+---
+
+## What this repo is NOT
+
+Setting expectations clearly:
+
+- **Not a production-ready product.** These are reference implementations and research materials. Adapt as needed for real deployments, with appropriate security review.
+- **Not a lookup or verification service.** There's no way to query whether an IC number belongs to a real person from this repo. That would require authorized access to JPN's databases, which this does not and cannot provide.
+- **Not endorsed by JPN or IRIS Corporation.** This is independent community documentation. The checksum algorithm in particular has never been officially confirmed — see the [Disclaimer](#disclaimer).
+- **Not a forgery guide.** Physical MyKad counterfeiting requires millions of ringgit worth of specialized equipment (lasers, polycarbonate lamination presses, hologram origination) plus proprietary materials that aren't publicly available. This repo documents how the card works; it does not enable making fake ones.
+- **Does not contain real personal data.** All IC numbers in tutorials, examples, and generators are fictitious. Any resemblance to real persons is coincidental.
 
 ---
 
@@ -100,10 +135,11 @@ Pick a path based on what you're trying to do:
 mykad-reader/
 ├── Documentation/                      Written research and reference materials
 ├── Mykad Generator_Checksum/           Interactive web tools (HTML)
-├── MyKad Ocr/                          OCR research and Go services
+├── MyKad_OCR/                          OCR research and Go services
 ├── MyKad project/                      Core Python implementations
 ├── Other Github Mykad Project sample/  Third-party vendor SDKs and open-source references
-└── README.md                           You are here
+├── README.md                           You are here
+└── LICENSE                             MIT License
 ```
 
 ---
@@ -148,7 +184,7 @@ Both tools are **fully offline** — once the HTML file is loaded, no internet c
 
 ---
 
-## 📁 MyKad Ocr
+## 📁 MyKad_OCR
 
 OCR research materials and Go-language vision services.
 
@@ -170,7 +206,7 @@ Core Python implementations — chip reading and OCR pipeline.
 | `mykad.py` | 6.8 KB | **Python smart-card reader.** Uses `pyscard` to talk to any PC/SC-compliant USB smart card reader. Implements the full APDU command sequence for reading the JPN application on the MyKad contact chip: selects the app, issues Set Length + Select Info + Read Info commands in 240-byte chunks, parses the returned bytes into personal details (name, IC, gender, DOB, address, race, religion, nationality), and extracts the JPEG photo from File 2. Includes all three critical "chip fixes" documented in the main technical reference. |
 | `mykad_ocr_v2.py` | 47 KB | **Full OCR pipeline in Python.** Flask web UI with webcam support, image upload, YOLOv8 field detection for locating the IC number / name / address regions on a card photo, PaddleOCR text extraction, ISO 7064 checksum validation for error correction, and fallback to vision LLM when traditional OCR fails. Intended as a reference implementation — shows the full stack of techniques and where each one succeeds or fails. |
 | `Architecture Plan.txt` | 2.3 KB | Architecture notes — how the reader, OCR pipeline, and server components fit together. |
-| `MYKAD_PRO.rar` | 83 KB | Compiled source archive of the broader MyKad Pro toolset (server + agent + UI). Extract to read. ⚠️ Verify no database, log files, or real user data are bundled inside before distributing further. |
+| `MYKAD_PRO.rar` | 83 KB | Compiled source archive of the broader MyKad Pro toolset (server + agent + UI). Extract to read. Verify no database, log files, or real user data are bundled inside before distributing further. |
 
 ### Running `mykad.py`
 
@@ -209,7 +245,7 @@ Reference materials collected from third-party vendors and open-source projects.
 | `index.html` | 18 KB | Sample web-based MyKad reader interface. |
 | `MyKad Validator.html` | 19 KB | Older community-made IC number validator — historical reference. Compare to the `12digits_identifier_system.html` tool in this repo for a more modern version. |
 
-> **Note on licensing:** Each third-party sample retains its original license. Vendor SDKs are subject to their manufacturers' terms. Open-source project snapshots are frozen copies — consult the original repositories for the latest versions and license terms.
+> **Note on licensing:** Each third-party sample retains its original license. Vendor SDKs are subject to their manufacturers' terms. Open-source project snapshots are frozen copies — consult the original repositories for the latest versions and license terms. If any rights-holder wants their material removed from this repository, please open an issue and it will be taken down immediately.
 
 ---
 
@@ -267,6 +303,8 @@ The MyKad has two independent chips:
 - **Contact chip (ISO 7816)**: 80KB EEPROM, gold pad on the back of the card. Stores personal data, JPEG photo (~15 KB), fingerprint templates (proprietary IRIS Corp format), residential address, SOCSO number. Readable by any PC/SC USB smart card reader using standard APDU commands — no PIN required. Writing requires JPN's Perso Card and Triple-DES keys.
 - **Contactless chip (Mifare Classic 1K, ISO 14443-3A)**: Touch 'n Go e-wallet only. Completely separate from the contact chip. NFC readers (ACR122U, PN532) can see this chip but not the identity chip. Sector keys are held by Touch 'n Go.
 
+The chip runs a proprietary operating system called **M-COS** (MyKad Chip Operating System), developed by IRIS Corporation. M-COS is not publicly available, which is one of the reasons why chip counterfeiting is effectively impossible — you cannot buy the OS, and the Perso Card + Triple-DES keys required to personalize a blank chip are held exclusively by JPN and IRIS inside Hardware Security Modules.
+
 ---
 
 ## Disclaimer
@@ -304,6 +342,25 @@ This repository is intended for educational and developer-reference purposes. Th
 
 ---
 
+## A note on sources and credits
+
+**Everything in this repository is compiled from publicly available information.** This includes JPN's official MyKad documentation, the Malaysia Government Portal, Wikipedia articles, academic papers, community forum posts (Lowyat.NET, Stack Overflow), vendor technical documentation, open-source GitHub projects, and blog posts written by Malaysian developers over the past two decades. No insider information, leaked documents, or proprietary sources were used.
+
+This research represents years of collection and synthesis work across many different sources. I've tried to properly credit original authors, researchers, and projects in the [Credits and sources](#credits-and-sources) section below — but with material gathered over a long period from many places, I may have missed someone.
+
+**If you see your work referenced here without proper attribution, or you feel your contribution has been misattributed or overlooked, please don't hesitate to reach out.** You can:
+
+- Open an issue on this repository
+- Message me directly on GitHub ([@deadboy18](https://github.com/deadboy18))
+
+I'll update the credits right away. Honestly, I'd much rather fix a missing credit than leave one wrong — you deserve recognition for your work, and this repo is meant to be a community resource that properly acknowledges everyone it builds on.
+
+The same applies to corrections of any kind. If something is factually wrong, outdated, misleading, or if you have authoritative information that would improve the documentation, please let me know. Quick heads-up and it gets fixed.
+
+**Apologies in advance if I've missed crediting anyone.** It's not intentional, and I'll happily fix it the moment I hear from you.
+
+---
+
 ## Credits and sources
 
 This work builds on research and documentation from many sources:
@@ -325,6 +382,17 @@ This work builds on research and documentation from many sources:
 - [amree's blog: How to read MyKad](https://amree.dev/2011/12/05/how-to-read-mykad/) — early documentation of APDU sequences
 - [Lowyat.NET forum thread on MyKad APDU](https://forum.lowyat.net/index.php?showtopic=355950) — community discussion
 - [Innov8tif — 3 Methods to Read MyKad](https://innov8tif.com/3-methods-to-read-mykad-2/) — overview article
+- [amree/mykad-java](https://github.com/amree/mykad-java) — Java implementation
+- [firdausramlan/MyKAD-Reader](https://github.com/firdausramlan/MyKAD-Reader) — HTML/JS Chrome plugin approach
+- [desmondchoon/HTTP-SmartCard-Reader](https://github.com/desmondchoon/HTTP-SmartCard-Reader) — HTTP-based reader on port 8080
+- [yapyeeqiang/mykad-reader](https://github.com/yapyeeqiang/mykad-reader) — multi-language scanner
+
+**Technology and hardware references:**
+- [OpenSC Project](https://github.com/OpenSC/OpenSC) — open-source smart card library
+- [PC/SC Workgroup](https://pcscworkgroup.com/) — smart card standards
+- [pyscard](https://pyscard.sourceforge.io/) — Python smart card library
+- [CardLogix](https://www.cardlogix.com/) — polycarbonate card manufacturing reference
+- [IAI Industrial Systems](https://www.iai.nl/) — laser engraving technology reference
 
 **Research report sources:**
 Full bibliography for the OCR research and technical reference documents is included at the end of each respective file. Over 30 primary sources cited covering polycarbonate card manufacturing, laser engraving technology, DOVID holography, guilloche pattern design, UV security printing, and smart card personalization.
@@ -333,33 +401,7 @@ Full bibliography for the OCR research and technical reference documents is incl
 
 ## License
 
-The original work in this repository — documentation, interactive tools, and code I've written — is released under the **MIT License**. Third-party samples retain their original licenses.
-
-```
-MIT License
-
-Copyright (c) 2026 Kesh (deadboy18)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
-
-(Save the above as a file named `LICENSE` at the repo root.)
+The original work in this repository — documentation, interactive tools, and code I've written — is released under the **MIT License**. See the [`LICENSE`](LICENSE) file at the root of the repository. Third-party samples retain their original licenses.
 
 ---
 
@@ -367,9 +409,9 @@ SOFTWARE.
 
 This is primarily a personal research archive, but if you notice errors, have additional references to contribute, or find improvements to the checksum understanding or chip-reading code, feel free to open an issue or pull request.
 
-If you're a JPN representative or someone with authoritative information about the checksum algorithm — please reach out. The community would love to confirm whether the Mod 11,2 algorithm is officially what's used, and document any edge cases or variants that may exist for MyTentera, MyPR, MyKAS, or MyKid.
+If you're a JPN representative, an IRIS Corporation employee, or someone with authoritative information about the checksum algorithm — please reach out. The community would love to confirm whether the Mod 11,2 algorithm is officially what's used, and document any edge cases or variants that may exist for MyTentera, MyPR, MyKAS, or MyKid.
 
 ---
 
-*Author:([@deadboy18](https://github.com/deadboy18))*
+*Author: Kesh ([@deadboy18](https://github.com/deadboy18))*
 *Last updated: April 2026*
