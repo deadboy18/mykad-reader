@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-i18n="app.title">MyKad IC Number Tool</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f0f2f5;
+  --bg2: #ffffff;
+  --bg3: #e4e7ec;
+  --text: #111827;
+  --text2: #4b5563;
+  --text3: #9ca3af;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-subtle: rgba(37,99,235,0.08);
+  --accent2: #059669;
+  --accent3: #7c3aed;
+  --border: #d1d5db;
+  --shadow: rgba(0,0,0,0.04);
+  --shadow2: rgba(0,0,0,0.08);
+  --mono-bg: #f8f9fb;
+  --tag-a: #2563eb;
+  --tag-a-bg: rgba(37,99,235,0.08);
+  --tag-b: #db2777;
+  --tag-b-bg: rgba(219,39,119,0.08);
+  --valid: #059669;
+  --valid-bg: rgba(5,150,105,0.08);
+  --invalid: #dc2626;
+  --invalid-bg: rgba(220,38,38,0.08);
+  --hover: rgba(37,99,235,0.03);
+  --scrollbar: #c4c9d2;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --info-bg: rgba(37,99,235,0.05);
+  --info-border: rgba(37,99,235,0.15);
+}
+
+[data-theme="dark"] {
+  --bg: #0b0f1a;
+  --bg2: #111827;
+  --bg3: #1f2937;
+  --text: #f3f4f6;
+  --text2: #9ca3af;
+  --text3: #6b7280;
+  --accent: #3b82f6;
+  --accent-hover: #60a5fa;
+  --accent-subtle: rgba(59,130,246,0.12);
+  --accent2: #34d399;
+  --accent3: #a78bfa;
+  --border: #374151;
+  --shadow: rgba(0,0,0,0.3);
+  --shadow2: rgba(0,0,0,0.5);
+  --mono-bg: #0d1117;
+  --tag-a: #60a5fa;
+  --tag-a-bg: rgba(96,165,250,0.12);
+  --tag-b: #f472b6;
+  --tag-b-bg: rgba(244,114,182,0.12);
+  --valid: #34d399;
+  --valid-bg: rgba(52,211,153,0.1);
+  --invalid: #f87171;
+  --invalid-bg: rgba(248,113,113,0.1);
+  --hover: rgba(59,130,246,0.06);
+  --scrollbar: #374151;
+  --info-bg: rgba(59,130,246,0.08);
+  --info-border: rgba(59,130,246,0.2);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'DM Sans', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  transition: background 0.3s, color 0.3s;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 28px 20px 60px;
+}
+
+/* Header */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo { display: flex; align-items: center; gap: 14px; }
+
+.logo-icon {
+  width: 40px; height: 40px;
+  background: var(--accent);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700; font-size: 14px;
+  letter-spacing: -0.5px;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.25);
+}
+
+h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.4px; line-height: 1.2; }
+.subtitle { font-size: 12px; color: var(--text2); font-weight: 500; margin-top: 1px; letter-spacing: 0.2px; }
+
+.header-actions { display: flex; gap: 8px; align-items: center; }
+
+.icon-btn {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  width: 38px; height: 38px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  transition: all 0.15s;
+  color: var(--text2);
+  flex-shrink: 0;
+}
+.icon-btn:hover { border-color: var(--accent); color: var(--text); }
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 2px;
+  background: var(--bg3);
+  border-radius: var(--radius);
+  padding: 3px;
+  margin-bottom: 24px;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  background: none;
+  border-radius: calc(var(--radius) - 2px);
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600; font-size: 13px;
+  color: var(--text2);
+  transition: all 0.2s;
+  letter-spacing: 0.1px;
+}
+
+.tab.active {
+  background: var(--bg2);
+  color: var(--text);
+  box-shadow: 0 1px 3px var(--shadow);
+}
+.tab:hover:not(.active) { color: var(--text); }
+
+/* Panels */
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* Card */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  margin-bottom: 16px;
+}
+
+.card-header {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--text2);
+}
+
+.card-header .indicator {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* Form */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-group.full { grid-column: 1 / -1; }
+
+label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+input, select {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  transition: border-color 0.15s;
+  outline: none;
+}
+input:focus, select:focus { border-color: var(--accent); }
+select { cursor: pointer; }
+
+/* Buttons */
+.btn {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.1px;
+}
+
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { opacity: 0.9; }
+
+.btn-secondary { background: var(--bg3); color: var(--text); }
+.btn-secondary:hover { background: var(--border); }
+
+.btn-ghost {
+  background: none;
+  color: var(--text2);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover { border-color: var(--accent); color: var(--text); }
+
+.btn-sm { padding: 7px 14px; font-size: 12px; }
+
+.btn-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+/* Tags */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+.tag-a { color: var(--tag-a); background: var(--tag-a-bg); }
+.tag-b { color: var(--tag-b); background: var(--tag-b-bg); }
+
+/* Status badges */
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 5px;
+  font-size: 11px; font-weight: 700;
+}
+.badge-valid { color: var(--valid); background: var(--valid-bg); }
+.badge-invalid { color: var(--invalid); background: var(--invalid-bg); }
+
+/* ID Display */
+.id-display {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+.id-raw {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 2px;
+}
+
+/* Analyze result grid */
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.detail-item label {
+  display: block;
+  font-size: 10px;
+  margin-bottom: 2px;
+}
+
+.detail-item span {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Analyze input */
+.analyze-input-wrap {
+  position: relative;
+}
+
+.analyze-input-wrap input {
+  width: 100%;
+  font-size: 18px;
+  padding: 14px 16px;
+  letter-spacing: 2px;
+  border-radius: var(--radius);
+  font-weight: 600;
+}
+
+.analyze-status {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+/* Batch table */
+.table-wrap { overflow-x: auto; }
+
+.batch-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.batch-table th {
+  text-align: left;
+  padding: 8px 10px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text3);
+  border-bottom: 2px solid var(--border);
+  white-space: nowrap;
+}
+
+.batch-table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+.batch-table tr:hover td { background: var(--hover); }
+
+.batch-table .td-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+}
+
+/* Summary bar */
+.summary-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  background: var(--bg3);
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text2);
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.summary-bar strong { color: var(--text); }
+
+/* Checksum detail */
+.checksum-box {
+  font-size: 11px;
+  color: var(--text2);
+  font-family: 'JetBrains Mono', monospace;
+  line-height: 1.7;
+  padding-top: 14px;
+  margin-top: 14px;
+  border-top: 1px solid var(--border);
+}
+.checksum-box .checksum-title {
+  font-weight: 700;
+  color: var(--text);
+  font-size: 11px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.info-box {
+  background: var(--info-bg);
+  border: 1px solid var(--info-border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-top: 14px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text2);
+}
+.info-box .info-title {
+  font-weight: 700;
+  color: var(--text);
+  font-size: 11px;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.info-box p { margin-bottom: 8px; }
+.info-box p:last-child { margin-bottom: 0; }
+.info-box code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  background: var(--bg3);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+.info-box a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+.info-box a:hover { text-decoration: underline; }
+
+.empty-msg {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text3);
+  font-size: 13px;
+}
+
+.separator { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
+
+.copy-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--bg3);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 999;
+  box-shadow: 0 4px 12px var(--shadow2);
+}
+.copy-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.copy-toast.error { background: var(--invalid-bg); color: var(--invalid); border-color: var(--invalid); }
+.lang-select {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 8px;
+  height: 38px; padding: 0 10px; font-family: inherit; font-size: 12px;
+  color: var(--text2); cursor: pointer;
+}
+.lang-select:focus-visible, .icon-btn:focus-visible, .tab:focus-visible, .btn:focus-visible,
+input:focus-visible, select:focus-visible, a:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+
+.batch-table td { cursor: default; }
+.batch-table td:hover { background: var(--accent-subtle); }
+
+/* scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 3px; }
+
+@media (max-width: 640px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .detail-grid { grid-template-columns: 1fr 1fr; }
+  .id-display { font-size: 16px; }
+  .analyze-input-wrap input { font-size: 15px; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo">
+      <div class="logo-icon">MY</div>
+      <div>
+        <h1 data-i18n="app.title">MyKad IC Number Tool</h1>
+        <div class="subtitle">YYMMDD-PB-###G &middot; <a href="https://en.wikipedia.org/wiki/ISO/IEC_7064" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none;font-weight:600">ISO 7064</a> Mod 11,2</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <select class="lang-select" id="langSelect" aria-label="Language">
+        <option value="en">EN</option>
+        <option value="ms">BM</option>
+      </select>
+      <button class="icon-btn" onclick="toggleTheme()" id="themeBtn" aria-label="Toggle dark mode" title="Toggle theme">🌙</button>
+    </div>
+  </header>
+
+  <div class="tabs" role="tablist" aria-label="Tool sections">
+    <button class="tab active" role="tab" id="tab-generate" aria-selected="true" aria-controls="panel-generate" tabindex="0" data-tab="generate" data-i18n="tab.generate">Generate</button>
+    <button class="tab" role="tab" id="tab-analyze" aria-selected="false" aria-controls="panel-analyze" tabindex="-1" data-tab="analyze" data-i18n="tab.analyze">Analyze</button>
+    <button class="tab" role="tab" id="tab-reference" aria-selected="false" aria-controls="panel-reference" tabindex="-1" data-tab="reference" data-i18n="tab.reference">Reference</button>
+  </div>
+
+  <!-- GENERATE PANEL -->
+  <div class="panel active" id="panel-generate" role="tabpanel" aria-labelledby="tab-generate" tabindex="0">
+    <div class="card">
+      <div class="card-header"><span class="indicator"></span>Parameters</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Date From</label>
+          <input type="date" id="dateFrom" value="1990-05-23">
+        </div>
+        <div class="form-group">
+          <label>Date To</label>
+          <input type="date" id="dateTo" value="1990-05-23">
+        </div>
+        <div class="form-group">
+          <label>Place of Birth (PB) From</label>
+          <select id="regionFrom"></select>
+        </div>
+        <div class="form-group">
+          <label>Place of Birth (PB) To</label>
+          <select id="regionTo"></select>
+        </div>
+        <div class="form-group">
+          <label>Gender</label>
+          <select id="classification" onchange="onClassChange()">
+            <option value="A">Male (Odd)</option>
+            <option value="B">Female (Even)</option>
+            <option value="random">Random</option>
+            <option value="custom">Custom (M/F split)</option>
+          </select>
+        </div>
+        <div class="form-group" id="countWrap">
+          <label>Count</label>
+          <input type="number" id="genCount" value="1" min="1" max="500" oninput="updateRandomBtnLabel()">
+        </div>
+        <div class="form-group" id="customGenderWrap" style="display:none">
+          <label>Male / Female</label>
+          <div style="display:flex;gap:6px;align-items:center">
+            <input type="number" id="maleCount" value="10" min="0" max="500" style="flex:1" placeholder="Male" oninput="updateRandomBtnLabel()">
+            <span style="color:var(--text3);font-size:12px;font-weight:600">/</span>
+            <input type="number" id="femaleCount" value="10" min="0" max="500" style="flex:1" placeholder="Female" oninput="updateRandomBtnLabel()">
+          </div>
+        </div>
+        <div class="form-group full" style="flex-direction:row;align-items:center;gap:8px;margin-top:2px">
+          <input type="checkbox" id="primaryOnly" style="width:16px;height:16px;padding:0;cursor:pointer" onchange="onPrimaryOnlyChange()">
+          <label for="primaryOnly" style="text-transform:none;font-size:12px;color:var(--text);cursor:pointer;letter-spacing:0">Malaysia only (01–16)</label>
+        </div>
+      </div>
+      <div class="btn-row" style="margin-top:16px;">
+        <button class="btn btn-primary" onclick="generateBatch()">Generate</button>
+        <button class="btn btn-secondary" id="randomBtn" onclick="generateRandomBatch()">Random 1</button>
+        <button class="btn btn-ghost btn-sm" onclick="clearResults()">Clear</button>
+        <select class="lang-select" id="exportFormat" aria-label="Export format" style="display:none;height:34px">
+          <option value="txt">TXT</option>
+          <option value="csv">CSV</option>
+          <option value="json">JSON</option>
+        </select>
+        <button class="btn btn-ghost btn-sm" id="exportBtn" onclick="exportResults()" style="display:none;" data-i18n="btn.export">Export</button>
+      </div>
+    </div>
+
+    <div id="genSummary" aria-live="polite"></div>
+    <div id="genResults"></div>
+  </div>
+
+  <!-- ANALYZE PANEL -->
+  <div class="panel" id="panel-analyze" role="tabpanel" aria-labelledby="tab-analyze" tabindex="0" hidden>
+    <div class="card">
+      <div class="card-header"><span class="indicator"></span>Analyze Identifier</div>
+      <div class="form-group">
+        <label>Enter or paste 12-digit identifier</label>
+        <div class="analyze-input-wrap">
+          <input type="text" id="analyzeInput" maxlength="14" placeholder="900523075049" autocomplete="off">
+          <span class="analyze-status" id="analyzeStatus" aria-live="polite" aria-atomic="true"></span>
+        </div>
+      </div>
+    </div>
+    <div id="analyzeResult" aria-live="polite"></div>
+  </div>
+
+  <!-- REFERENCE PANEL -->
+  <div class="panel" id="panel-reference" role="tabpanel" aria-labelledby="tab-reference" tabindex="0" hidden>
+    <div class="card">
+      <div class="card-header"><span class="indicator"></span>MyKad IC Number Format</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;letter-spacing:2px;margin-bottom:12px;color:var(--accent)">YYMMDD-PB-###G</div>
+      <div class="table-wrap">
+        <table class="batch-table" style="font-size:12px">
+          <thead><tr><th>Position</th><th>Field</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>1–2</td><td>YY</td><td class="td-text">Last two digits of birth year</td></tr>
+            <tr><td>3–4</td><td>MM</td><td class="td-text">Birth month (01–12)</td></tr>
+            <tr><td>5–6</td><td>DD</td><td class="td-text">Birth day (01–31)</td></tr>
+            <tr><td>7–8</td><td>PB</td><td class="td-text">Place of birth — state code (domestic) or country code (foreign-born)</td></tr>
+            <tr><td>9–11</td><td>###</td><td class="td-text">Sequence number assigned by JPN's system</td></tr>
+            <tr><td>12</td><td>G</td><td class="td-text">Gender + Checksum — Odd = Male, Even = Female</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="indicator"></span>Century Determination</div>
+      <p style="font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:12px">Since YY is only two digits, the century is inferred from the first digit of the sequence number (position 9):</p>
+      <div class="table-wrap">
+        <table class="batch-table" style="font-size:12px">
+          <thead><tr><th>Seq 1st Digit</th><th>Century</th><th>Year Range</th><th>Example</th></tr></thead>
+          <tbody>
+            <tr><td>0, 1, 2, 3, 4</td><td>2000s</td><td class="td-text">2000–2099</td><td class="td-text">YY=05, seq=023x &rarr; 2005</td></tr>
+            <tr><td>5, 6, 7, 8, 9</td><td>1900s</td><td class="td-text">1900–1999</td><td class="td-text">YY=89, seq=678x &rarr; 1989</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="indicator"></span>Gender &amp; Checksum — How D12 Works</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.8">
+        <p>The 12th digit serves <strong style="color:var(--text)">dual purpose</strong>: it is both the ISO 7064 Mod 11,2 checksum <em>and</em> the gender indicator (odd = male, even = female). This works because JPN's system iterates sequences until both conditions are met.</p>
+        <p style="margin-top:10px"><strong style="color:var(--text)">Assignment algorithm (theory):</strong></p>
+        <ol style="margin:8px 0 8px 18px;line-height:2">
+          <li>Fix the prefix: YYMMDD (6 digits) + PB (2 digits) = 8 fixed digits.</li>
+          <li>Start from sequence 001 (or next unassigned).</li>
+          <li>Compute checksum for the 11-digit candidate (prefix + 3-digit sequence).</li>
+          <li>If checksum = 10 ('X'): skip — no single-digit representation.</li>
+          <li>If checksum parity doesn't match applicant's gender: skip.</li>
+          <li>If checksum matches gender parity AND sequence not previously assigned: <strong style="color:var(--valid)">ASSIGN</strong>.</li>
+        </ol>
+        <p style="margin-top:10px"><strong style="color:var(--text)">Worked example:</strong> Male, born 1 Jan 2000, Sarawak (PB=13)</p>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 12px;margin-top:8px;line-height:1.9">
+          Prefix: 000101-13-<br>
+          Seq 001: checksum=6 (even=Female) &rarr; SKIP<br>
+          Seq 002: checksum=4 (even=Female) &rarr; SKIP<br>
+          Seq 003: checksum=2 (even=Female) &rarr; SKIP<br>
+          Seq 004: checksum=0 (even=Female) &rarr; SKIP<br>
+          Seq 005: checksum=9 (odd=Male) &rarr; <span style="color:var(--valid);font-weight:700">ASSIGN &rarr; 000101130059</span>
+        </div>
+        <p style="margin-top:12px">Since Mod 11 produces results 0–10, any sequence where C = 10 has no single-digit representation and is permanently excluded (~9.1% of all sequences). This leaves roughly equal capacity for male and female assignments.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="indicator"></span>Card Variants</div>
+      <div class="table-wrap">
+        <table class="batch-table" style="font-size:12px">
+          <thead><tr><th>Card</th><th>Issued To</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td style="font-weight:600">MyKad</td><td class="td-text">Malaysian citizens aged 12+</td><td class="td-text">Standard 12-digit IC number</td></tr>
+            <tr><td style="font-weight:600">MyKid</td><td class="td-text">Malaysian citizens under 12</td><td class="td-text">Same format, issued to minors</td></tr>
+            <tr><td style="font-weight:600">MyPR</td><td class="td-text">Permanent residents</td><td class="td-text">Same format, assumed same checksum</td></tr>
+            <tr><td style="font-weight:600">MyKAS</td><td class="td-text">Temporary residents</td><td class="td-text">Same format, less tested with checksum</td></tr>
+            <tr><td style="font-weight:600">MyTentera</td><td class="td-text">Military personnel</td><td class="td-text">Variant with military extensions</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="indicator"></span>Place of Birth (PB) Directory</div>
+      <div id="pbDirectory"></div>
+    </div>
+
+    <div class="card" style="border-color:var(--info-border);background:var(--info-bg)">
+      <div class="card-header" style="color:var(--accent)"><span class="indicator" style="background:var(--accent)"></span>Disclaimer &amp; References</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.8">
+        <p>The checksum algorithm is <strong style="color:var(--text)">community-researched</strong> and NOT officially confirmed by JPN (Jabatan Pendaftaran Negara). Do not rely on it as sole validation. A passing checksum does not mean an IC number is assigned to a real person.</p>
+        <p style="margin-top:8px">This tool generates <strong style="color:var(--text)">fictitious</strong> IC numbers for development and testing purposes only. Any resemblance to real persons is entirely coincidental.</p>
+        <hr class="separator">
+        <p style="margin-top:4px"><strong style="color:var(--text)">Standards &amp; resources:</strong></p>
+        <div style="margin-top:6px;display:flex;flex-direction:column;gap:4px;font-family:'JetBrains Mono',monospace;font-size:11px">
+          <a href="https://en.wikipedia.org/wiki/ISO/IEC_7064" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none">ISO/IEC 7064 — Check character systems</a>
+          <a href="https://en.wikipedia.org/wiki/Malaysian_identity_card" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none">Wikipedia — Malaysian identity card</a>
+          <a href="https://github.com/deadboy18/mykad-reader" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none">deadboy18/mykad-reader — MyKad Complete Technical Reference</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="copy-toast" id="copyToast" role="status" aria-live="polite"></div>
+<script>
+// ============ CONSTANTS ============
+const WEIGHTS = [2,4,8,5,10,9,7,3,6,1,2];
+
+// ============ i18n ============
+// To add a language: copy the `en` block, translate values, add a <option> in #langSelect.
+// Any element with data-i18n="key" will be replaced with STRINGS[currentLang][key] on load & switch.
+const STRINGS = {
+  en: {
+    'app.title': 'MyKad IC Number Tool',
+    'app.subtitle': 'Generate, analyze & decode Malaysian IC numbers',
+    'tab.generate': 'Generate',
+    'tab.analyze': 'Analyze',
+    'tab.reference': 'Reference',
+    'btn.generate': 'Generate',
+    'btn.clear': 'Clear',
+    'btn.export': 'Export',
+    'gender.male': 'Male',
+    'gender.female': 'Female',
+    'toast.copied': 'Copied to clipboard',
+    'toast.copyFail': 'Copy failed',
+    'empty.none': 'No identifiers could be generated with these parameters.',
+    'empty.invalid': 'Invalid identifier.',
+    'status.valid': 'Valid',
+    'status.invalid': 'Invalid',
+    'status.tooLong': 'Too long'
+  },
+  ms: {
+    'app.title': 'Alat Nombor IC MyKad',
+    'app.subtitle': 'Jana, analisis & nyahkod nombor IC Malaysia',
+    'tab.generate': 'Jana',
+    'tab.analyze': 'Analisis',
+    'tab.reference': 'Rujukan',
+    'btn.generate': 'Jana',
+    'btn.clear': 'Kosongkan',
+    'btn.export': 'Eksport',
+    'gender.male': 'Lelaki',
+    'gender.female': 'Perempuan',
+    'toast.copied': 'Disalin ke papan klip',
+    'toast.copyFail': 'Salinan gagal',
+    'empty.none': 'Tiada nombor IC dapat dijana dengan parameter ini.',
+    'empty.invalid': 'Nombor IC tidak sah.',
+    'status.valid': 'Sah',
+    'status.invalid': 'Tidak sah',
+    'status.tooLong': 'Terlalu panjang'
+  }
+};
+let currentLang = localStorage.getItem('mykad_lang') || 'en';
+function t(key) { return (STRINGS[currentLang] && STRINGS[currentLang][key]) || STRINGS.en[key] || key; }
+function applyI18n() {
+  document.documentElement.lang = currentLang;
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.getAttribute('data-i18n')); });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { el.placeholder = t(el.getAttribute('data-i18n-placeholder')); });
+  const titleEl = document.querySelector('title[data-i18n]');
+  if (titleEl) document.title = titleEl.textContent;
+}
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('mykad_lang', lang);
+  applyI18n();
+}
+
+// ============ TOAST ============
+function showToast(msg, isError) {
+  const el = document.getElementById('copyToast');
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.add('show');
+  if (isError) el.classList.add('error'); else el.classList.remove('error');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 1600);
+}
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); showToast(t('toast.copied')); }
+  catch(e) { showToast(t('toast.copyFail'), true); }
+}
+
+// ============ THEME INIT (respects OS preference) ============
+(function initThemeEarly() {
+  const saved = localStorage.getItem('mykad_theme');
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const theme = saved || (prefersDark ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+
+// ============ KEYBOARD-ACCESSIBLE TABS ============
+function switchTab(name) {
+  const tabs = document.querySelectorAll('[role="tab"]');
+  tabs.forEach(t => {
+    const active = t.dataset.tab === name;
+    t.classList.toggle('active', active);
+    t.setAttribute('aria-selected', active ? 'true' : 'false');
+    t.setAttribute('tabindex', active ? '0' : '-1');
+  });
+  document.querySelectorAll('[role="tabpanel"]').forEach(p => {
+    const active = p.id === 'panel-' + name;
+    p.classList.toggle('active', active);
+    if (active) p.removeAttribute('hidden'); else p.setAttribute('hidden', '');
+  });
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const tablist = document.querySelector('[role="tablist"]');
+  if (!tablist) return;
+  const tabs = [...tablist.querySelectorAll('[role="tab"]')];
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => { switchTab(tab.dataset.tab); tab.focus(); });
+    tab.addEventListener('keydown', e => {
+      let next = -1;
+      if (e.key === 'ArrowRight') next = (i + 1) % tabs.length;
+      else if (e.key === 'ArrowLeft') next = (i - 1 + tabs.length) % tabs.length;
+      else if (e.key === 'Home') next = 0;
+      else if (e.key === 'End') next = tabs.length - 1;
+      if (next >= 0) { e.preventDefault(); tabs[next].focus(); switchTab(tabs[next].dataset.tab); }
+    });
+  });
+  applyI18n();
+  const ls = document.getElementById('langSelect');
+  if (ls) { ls.value = currentLang; ls.addEventListener('change', e => setLang(e.target.value)); }
+});
+
+const REGION_PRIMARY = {
+  '01':'Johor','02':'Kedah','03':'Kelantan','04':'Melaka',
+  '05':'Negeri Sembilan','06':'Pahang','07':'Pulau Pinang','08':'Perak',
+  '09':'Perlis','10':'Selangor','11':'Terengganu','12':'Sabah',
+  '13':'Sarawak','14':'WP Kuala Lumpur','15':'WP Labuan','16':'WP Putrajaya'
+};
+
+const REGION_LEGACY = {};
+[[21,24,'Johor'],[25,27,'Kedah'],[28,29,'Kelantan'],[30,30,'Melaka'],
+ [31,31,'Negeri Sembilan'],[59,59,'Negeri Sembilan'],[32,33,'Pahang'],[34,35,'Pulau Pinang'],
+ [36,39,'Perak'],[40,40,'Perlis'],[41,44,'Selangor'],[45,46,'Terengganu'],
+ [47,49,'Sabah'],[50,53,'Sarawak'],[54,57,'Kuala Lumpur'],[58,58,'Labuan']
+].forEach(([s,e,r])=>{ for(let i=s;i<=e;i++) REGION_LEGACY[String(i).padStart(2,'0')]=r; });
+
+const REGION_EXTERNAL = {
+  '60':'Brunei','61':'Indonesia','62':'Cambodia','63':'Laos',
+  '64':'Myanmar','65':'Philippines','66':'Singapore','67':'Thailand',
+  '68':'Vietnam','71':'Born outside Malaysia (pre-2001)','72':'Born outside Malaysia (pre-2001)',
+  '74':'China','75':'India','76':'Pakistan','77':'Saudi Arabia','78':'Sri Lanka',
+  '79':'Bangladesh','82':'Unknown state',
+  '83':'Asia-Pacific','84':'South America',
+  '85':'Africa','86':'Europe','87':'Britain / Ireland','88':'Middle East',
+  '89':'Far East','90':'Caribbean','91':'North America',
+  '92':'Soviet Union / USSR','93':'Other Countries',
+  '98':'Stateless Person','99':'Unspecified / Refugee'
+};
+
+const PRIMARY_CODES = new Set(['01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16']);
+
+function getRegionName(code) {
+  return REGION_PRIMARY[code] || REGION_LEGACY[code] || REGION_EXTERNAL[code] || 'Unknown ('+code+')';
+}
+
+function getAllRegionCodes() {
+  const s = new Set([
+    ...Object.keys(REGION_PRIMARY),
+    ...Object.keys(REGION_LEGACY),
+    ...Object.keys(REGION_EXTERNAL)
+  ]);
+  return [...s].sort((a,b)=>parseInt(a,10)-parseInt(b,10));
+}
+
+// ============ CHECKSUM ============
+function computeCheckDigit(digits11) {
+  const rev = [...digits11].reverse();
+  let sum = 0;
+  for (let j=0; j<11; j++) sum += rev[j] * WEIGHTS[j];
+  return (12 - (sum % 11)) % 11; // 0-10, 10=invalid
+}
+
+// ============ DATE HELPERS (timezone-safe) ============
+function parseDateParts(dateStr) {
+  // dateStr is "YYYY-MM-DD"
+  const [y, m, d] = dateStr.split('-').map(Number);
+  return { year: y, month: m, day: d };
+}
+
+function dateToYYMMDD(year, month, day) {
+  const yy = String(year % 100).padStart(2, '0');
+  const mm = String(month).padStart(2, '0');
+  const dd = String(day).padStart(2, '0');
+  return { yy, mm, dd };
+}
+
+function randomDateBetween(fromStr, toStr) {
+  // Use UTC to avoid timezone issues
+  const f = Date.UTC(...fromStr.split('-').map((v,i) => i===1 ? v-1 : +v));
+  const t = Date.UTC(...toStr.split('-').map((v,i) => i===1 ? v-1 : +v));
+  const ts = f + Math.floor(Math.random() * (t - f + 86400000)); // inclusive
+  const d = new Date(ts);
+  const y = d.getUTCFullYear();
+  const m = d.getUTCMonth() + 1;
+  const day = d.getUTCDate();
+  return `${y}-${String(m).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+}
+
+function isValidDate(year, month, day) {
+  const d = new Date(Date.UTC(year, month-1, day));
+  return d.getUTCFullYear()===year && d.getUTCMonth()+1===month && d.getUTCDate()===day;
+}
+
+function calcAge(year, month, day) {
+  const now = new Date();
+  const refY = now.getFullYear(), refM = now.getMonth() + 1, refD = now.getDate();
+  let years = refY - year;
+  let months = refM - month;
+  let days = refD - day;
+  if (days < 0) {
+    months--;
+    const prev = new Date(refY, refM - 1, 0).getDate();
+    days += prev;
+  }
+  if (months < 0) { years--; months += 12; }
+  return `${years}y ${months}m ${days}d`;
+}
+
+// ============ GENERATE ============
+function generateOneRandom(dateStr, regionCode, desiredClass) {
+  const { year, month, day } = parseDateParts(dateStr);
+  const { yy, mm, dd } = dateToYYMMDD(year, month, day);
+  const century = year >= 2000 ? 2000 : 1900;
+  const seqRange = century === 1900 ? [500,999] : [0,499];
+  const candidates = [];
+
+  for (let seq = seqRange[0]; seq <= seqRange[1]; seq++) {
+    const seqStr = String(seq).padStart(3,'0');
+    const digits = (yy+mm+dd+regionCode+seqStr).split('').map(Number);
+    const c = computeCheckDigit(digits);
+    if (c === 10) continue;
+    const isOdd = c % 2 === 1;
+    if (desiredClass === 'A' && isOdd) candidates.push({digits:[...digits,c],seq,chk:c,cls:'A'});
+    else if (desiredClass === 'B' && !isOdd) candidates.push({digits:[...digits,c],seq,chk:c,cls:'B'});
+    else if (desiredClass === 'random') candidates.push({digits:[...digits,c],seq,chk:c,cls:isOdd?'A':'B'});
+  }
+  if (!candidates.length) return null;
+  return candidates[Math.floor(Math.random()*candidates.length)];
+}
+
+// ============ DECODE ============
+function decode(raw) {
+  const d = raw.replace(/\D/g,'');
+  if (d.length !== 12) return null;
+  const digits = d.split('').map(Number);
+  const yy = d.slice(0,2), mm = d.slice(2,4), dd = d.slice(4,6);
+  const rc = d.slice(6,8), seqStr = d.slice(8,11), chk = parseInt(d[11],10);
+  const d9 = parseInt(d[8],10);
+  const century = d9 >= 5 ? 1900 : 2000;
+  const fullYear = century + parseInt(yy,10);
+  const monthNum = parseInt(mm,10), dayNum = parseInt(dd,10);
+  const dateValid = isValidDate(fullYear, monthNum, dayNum);
+  const dateStr = `${fullYear}-${mm}-${dd}`;
+  const computed = computeCheckDigit(digits.slice(0,11));
+  const checksumValid = computed === chk && computed !== 10;
+  const cls = chk % 2 === 1 ? 'A' : 'B';
+  const region = getRegionName(rc);
+  const age = dateValid ? calcAge(fullYear, monthNum, dayNum) : 'N/A';
+  return { raw:d, digits, yy, mm, dd, rc, seqStr, chk, century, fullYear, dateStr, dateValid, checksumValid, cls, region, age, computed };
+}
+
+function genderLabel(cls) { return cls === 'A' ? 'Male' : 'Female'; }
+
+function formatDashed(digits) {
+  const s = digits.join('');
+  return s.slice(0,6)+'-'+s.slice(6,8)+'-'+s.slice(8);
+}
+
+// ============ THEME ============
+let darkMode = document.documentElement.getAttribute('data-theme') === 'dark';
+function applyTheme() {
+  document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+  const btn = document.getElementById('themeBtn');
+  if (btn) {
+    btn.textContent = darkMode ? '☀️' : '🌙';
+    btn.setAttribute('aria-pressed', darkMode ? 'true' : 'false');
+  }
+  localStorage.setItem('mykad_theme', darkMode ? 'dark' : 'light');
+}
+function toggleTheme() { darkMode = !darkMode; applyTheme(); }
+applyTheme();
+
+// ============ TABS (see accessible switchTab above) ============
+const _origSwitchTab = switchTab;
+switchTab = function(name) { _origSwitchTab(name); if (name === 'analyze') { const el = document.getElementById('analyzeInput'); if (el) el.focus(); } };
+
+// ============ REGION SELECTS ============
+function populateRegionSelects() {
+  const primaryOnly = document.getElementById('primaryOnly').checked;
+  const codes = primaryOnly ? getAllRegionCodes().filter(c => PRIMARY_CODES.has(c)) : getAllRegionCodes();
+  const html = codes.map(c => `<option value="${c}">${c} — ${getRegionName(c)}</option>`).join('');
+  const fromEl = document.getElementById('regionFrom');
+  const toEl = document.getElementById('regionTo');
+  const oldFrom = fromEl.value, oldTo = toEl.value;
+  fromEl.innerHTML = html;
+  toEl.innerHTML = html;
+  fromEl.value = codes.includes(oldFrom) ? oldFrom : codes[0];
+  toEl.value = codes.includes(oldTo) ? oldTo : codes[codes.length-1];
+}
+
+function onPrimaryOnlyChange() { populateRegionSelects(); }
+populateRegionSelects();
+
+// Build PB directory for reference tab
+(function buildPBDirectory() {
+  const el = document.getElementById('pbDirectory');
+  if (!el) return;
+  const sections = [
+    { title: 'Malaysian States — Primary Codes', src: REGION_PRIMARY },
+    { title: 'Malaysian States — Legacy / Alternate Codes', src: REGION_LEGACY },
+    { title: 'Foreign Born — Country / Region Codes', src: REGION_EXTERNAL }
+  ];
+  let html = '';
+  sections.forEach(sec => {
+    const keys = Object.keys(sec.src).sort((a,b)=>parseInt(a,10)-parseInt(b,10));
+    html += `<div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin:14px 0 6px">${sec.title}</div>`;
+    html += '<table class="batch-table" style="font-size:12px;margin-bottom:4px"><thead><tr><th style="width:60px">Code</th><th>State / Country</th></tr></thead><tbody>';
+    keys.forEach(c => { html += `<tr><td>${c}</td><td class="td-text">${sec.src[c]}</td></tr>`; });
+    html += '</tbody></table>';
+  });
+  el.innerHTML = html;
+})();
+
+// ============ GENDER MODE TOGGLE ============
+function onClassChange() {
+  const val = document.getElementById('classification').value;
+  document.getElementById('countWrap').style.display = val === 'custom' ? 'none' : '';
+  document.getElementById('customGenderWrap').style.display = val === 'custom' ? '' : 'none';
+}
+
+// ============ DOUBLE-CLICK COPY ============
+let copyTimeout;
+function showCopyToast(text) {
+  const toast = document.getElementById('copyToast');
+  const short = text.length > 40 ? text.slice(0,37)+'...' : text;
+  toast.textContent = 'Copied: ' + short;
+  toast.classList.add('show');
+  clearTimeout(copyTimeout);
+  copyTimeout = setTimeout(() => toast.classList.remove('show'), 1500);
+}
+
+document.addEventListener('dblclick', function(e) {
+  const td = e.target.closest('.batch-table td');
+  if (!td) return;
+  const text = td.textContent.trim();
+  if (!text) return;
+  navigator.clipboard.writeText(text)
+    .then(() => showCopyToast(text))
+    .catch(() => showToast(t('toast.copyFail'), true));
+  const sel = window.getSelection();
+  const range = document.createRange();
+  range.selectNodeContents(td);
+  sel.removeAllRanges();
+  sel.addRange(range);
+});
+
+// ============ RANDOM BUTTON LABEL ============
+function updateRandomBtnLabel() {
+  const cls = document.getElementById('classification').value;
+  let count;
+  if (cls === 'custom') {
+    const m = Math.max(0, parseInt(document.getElementById('maleCount',10).value)||0);
+    const f = Math.max(0, parseInt(document.getElementById('femaleCount',10).value)||0);
+    count = m + f;
+  } else {
+    count = Math.min(500, Math.max(1, parseInt(document.getElementById('genCount',10).value)||1));
+  }
+  document.getElementById('randomBtn').textContent = `Random ${count}`;
+}
+updateRandomBtnLabel();
+
+// ============ GENERATE BATCH ============
+let lastBatch = [];
+
+function generateBatch() {
+  const dateFrom = document.getElementById('dateFrom').value;
+  const dateTo = document.getElementById('dateTo').value;
+  if (!dateFrom || !dateTo) { alert('Please set both dates.'); return; }
+  const rcFrom = parseInt(document.getElementById('regionFrom',10).value);
+  const rcTo = parseInt(document.getElementById('regionTo',10).value);
+  const cls = document.getElementById('classification').value;
+
+  const primaryOnly = document.getElementById('primaryOnly').checked;
+  let regionCodes = getAllRegionCodes().filter(c => { const n=parseInt(c,10); return n>=rcFrom && n<=rcTo; });
+  if (primaryOnly) regionCodes = regionCodes.filter(c => PRIMARY_CODES.has(c));
+  if (!regionCodes.length) { alert('No valid region codes in range.'); return; }
+
+  let results = [];
+
+  if (cls === 'custom') {
+    const maleCount = Math.min(500, Math.max(0, parseInt(document.getElementById('maleCount',10).value)||0));
+    const femaleCount = Math.min(500, Math.max(0, parseInt(document.getElementById('femaleCount',10).value)||0));
+    // Generate males
+    let attempts = 0;
+    while (results.length < maleCount && attempts < maleCount * 30) {
+      attempts++;
+      const d = randomDateBetween(dateFrom, dateTo);
+      const rc = regionCodes[Math.floor(Math.random()*regionCodes.length)];
+      const item = generateOneRandom(d, rc, 'A');
+      if (item) results.push(item);
+    }
+    // Generate females
+    const femaleResults = [];
+    attempts = 0;
+    while (femaleResults.length < femaleCount && attempts < femaleCount * 30) {
+      attempts++;
+      const d = randomDateBetween(dateFrom, dateTo);
+      const rc = regionCodes[Math.floor(Math.random()*regionCodes.length)];
+      const item = generateOneRandom(d, rc, 'B');
+      if (item) femaleResults.push(item);
+    }
+    results = results.concat(femaleResults);
+  } else {
+    const count = Math.min(500, Math.max(1, parseInt(document.getElementById('genCount',10).value)||1));
+    let attempts = 0;
+    while (results.length < count && attempts < count * 30) {
+      attempts++;
+      const d = randomDateBetween(dateFrom, dateTo);
+      const rc = regionCodes[Math.floor(Math.random()*regionCodes.length)];
+      const item = generateOneRandom(d, rc, cls);
+      if (item) results.push(item);
+    }
+  }
+
+  lastBatch = results;
+  renderBatchResults(results);
+  document.getElementById('exportBtn').style.display = results.length ? '' : 'none';
+  document.getElementById('exportFormat').style.display = results.length ? '' : 'none';
+}
+
+function generateRandomBatch() {
+  const count = Math.min(500, Math.max(1, parseInt(document.getElementById('genCount',10).value)||1));
+  document.getElementById('dateFrom').value = '1950-01-01';
+  document.getElementById('dateTo').value = '2025-12-31';
+  document.getElementById('regionFrom').value = '01';
+  document.getElementById('regionTo').value = '99';
+  document.getElementById('classification').value = 'random';
+  document.getElementById('genCount').value = count;
+  generateBatch();
+}
+
+function clearResults() {
+  lastBatch = [];
+  document.getElementById('genResults').innerHTML = '';
+  document.getElementById('genSummary').innerHTML = '';
+  document.getElementById('exportBtn').style.display = 'none';
+  document.getElementById('exportFormat').style.display = 'none';
+}
+
+function renderBatchResults(results) {
+  const summaryEl = document.getElementById('genSummary');
+  const resultsEl = document.getElementById('genResults');
+
+  if (!results.length) {
+    resultsEl.innerHTML = '<div class="card"><div class="empty-msg">No identifiers could be generated with these parameters.</div></div>';
+    summaryEl.innerHTML = '';
+    return;
+  }
+
+  const classACount = results.filter(r=>r.cls==='A').length;
+  summaryEl.innerHTML = `
+    <div class="summary-bar">
+      Generated <strong>${results.length}</strong> identifiers
+      <span style="color:var(--tag-a)">Male: ${classACount}</span>
+      <span style="color:var(--tag-b)">Female: ${results.length - classACount}</span>
+      <button class="btn btn-ghost btn-sm" onclick="showBatchAnalysis()" style="margin-left:auto">Analyze Batch</button>
+    </div>
+    <div style="font-size:10px;color:var(--text3);margin-bottom:8px;margin-top:-6px">Double-click any cell to copy</div>`;
+
+  let html = '<div class="card"><div class="table-wrap"><table class="batch-table"><thead><tr>' +
+    '<th>#</th><th>Formatted</th><th>Raw</th><th>Gender</th><th>Date</th><th>Age</th><th>Place of Birth</th><th>Seq</th><th>Chk</th>' +
+    '</tr></thead><tbody>';
+
+  results.forEach((r, i) => {
+    const raw = r.digits.join('');
+    const dec = decode(raw);
+    html += `<tr>
+      <td style="color:var(--text3)">${i+1}</td>
+      <td style="font-weight:600;letter-spacing:0.5px">${formatDashed(r.digits)}</td>
+      <td style="color:var(--text3)">${raw}</td>
+      <td><span class="tag tag-${r.cls.toLowerCase()}">${genderLabel(r.cls)}</span></td>
+      <td>${dec ? dec.dateStr : '—'}</td>
+      <td class="td-text" style="color:var(--text2)">${dec ? dec.age : '—'}</td>
+      <td class="td-text" style="font-size:11px">${dec ? dec.rc+' '+dec.region : '—'}</td>
+      <td>${r.seq}</td>
+      <td>${r.chk}</td>
+    </tr>`;
+  });
+
+  html += '</tbody></table></div></div>';
+  resultsEl.innerHTML = html;
+}
+
+function showBatchAnalysis() {
+  if (!lastBatch.length) return;
+  const decoded = lastBatch.map(r => decode(r.digits.join(''))).filter(Boolean);
+  const regions = {}, years = {};
+  let classA = 0, classB = 0;
+
+  decoded.forEach(d => {
+    const key = d.rc + ' ' + d.region;
+    regions[key] = (regions[key]||0)+1;
+    years[d.fullYear] = (years[d.fullYear]||0)+1;
+    if (d.cls==='A') classA++; else classB++;
+  });
+
+  const regionEntries = Object.entries(regions).sort((a,b)=>b[1]-a[1]);
+  const yearEntries = Object.entries(years).sort((a,b)=>a[0]-b[0]);
+
+  let html = '<div class="card"><div class="card-header"><span class="indicator" style="background:var(--accent3)"></span>Batch Analysis</div>';
+  html += '<div class="form-grid" style="gap:16px">';
+
+  html += '<div><label>Gender</label><div style="margin-top:6px;font-family:JetBrains Mono;font-size:12px;">';
+  html += `<div style="display:flex;justify-content:space-between;margin-bottom:3px"><span class="tag tag-a">Male</span><strong>${classA}</strong> (${(classA/decoded.length*100).toFixed(1)}%)</div>`;
+  html += `<div style="display:flex;justify-content:space-between"><span class="tag tag-b">Female</span><strong>${classB}</strong> (${(classB/decoded.length*100).toFixed(1)}%)</div>`;
+  const barA = classA/(classA+classB)*100;
+  html += `<div style="margin-top:6px;height:4px;border-radius:2px;background:var(--bg3);overflow:hidden"><div style="height:100%;width:${barA}%;background:var(--tag-a);border-radius:2px"></div></div>`;
+  html += '</div></div>';
+
+  html += '<div><label>Place of Birth (Top 10)</label><div style="margin-top:6px;font-size:11px;">';
+  regionEntries.slice(0,10).forEach(([r,c])=>{
+    html += `<div style="display:flex;justify-content:space-between;padding:1px 0;font-family:JetBrains Mono"><span style="color:var(--text2)">${r}</span><span>${c}</span></div>`;
+  });
+  html += '</div></div>';
+
+  html += '<div class="full"><label>Year Distribution</label><div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:4px;">';
+  yearEntries.forEach(([y,c])=>{
+    html += `<span style="font-family:JetBrains Mono;font-size:10px;padding:2px 6px;background:var(--bg3);border-radius:4px">${y}: ${c}</span>`;
+  });
+  html += '</div></div>';
+
+  html += '</div></div>';
+
+  // Remove any previous analysis card
+  const existing = document.getElementById('batchAnalysisCard');
+  if (existing) existing.remove();
+  const wrapper = document.createElement('div');
+  wrapper.id = 'batchAnalysisCard';
+  wrapper.innerHTML = html;
+  document.getElementById('genSummary').after(wrapper);
+}
+
+// ============ EXPORT ============
+function csvEscape(v) {
+  const s = String(v == null ? '' : v);
+  return /[",\n]/.test(s) ? '"' + s.replace(/"/g,'""') + '"' : s;
+}
+function exportResults() {
+  if (!lastBatch.length) return;
+  const fmt = (document.getElementById('exportFormat') || {}).value || 'txt';
+  const rows = lastBatch.map((r, i) => {
+    const raw = r.digits.join('');
+    const dec = decode(raw);
+    return {
+      no: i+1,
+      formatted: formatDashed(r.digits),
+      raw,
+      gender: genderLabel(r.cls),
+      date: dec ? dec.dateStr : '',
+      age: dec ? dec.age : '',
+      placeOfBirth: dec ? (dec.rc + ' ' + dec.region) : '',
+      seq: r.seq,
+      chk: r.chk
+    };
+  });
+  const headers = ['no','formatted','raw','gender','date','age','placeOfBirth','seq','chk'];
+  let content, mime, ext;
+  if (fmt === 'json') {
+    content = JSON.stringify({
+      tool: 'MyKad IC Number Tool',
+      generated: new Date().toISOString(),
+      count: rows.length,
+      records: rows
+    }, null, 2);
+    mime = 'application/json'; ext = 'json';
+  } else if (fmt === 'csv') {
+    const lines = [headers.join(',')];
+    rows.forEach(r => lines.push(headers.map(h => csvEscape(r[h])).join(',')));
+    content = lines.join('\r\n');
+    mime = 'text/csv'; ext = 'csv';
+  } else {
+    const lines = [
+      '# MyKad IC Number Export',
+      `# Generated: ${new Date().toISOString().split('T')[0]}`,
+      `# Count: ${rows.length}`,
+      '',
+      'No.\tFormatted\tRaw\tGender\tDate\tAge\tPlace of Birth\tSeq\tChk',
+      '-'.repeat(100)
+    ];
+    rows.forEach(r => lines.push([r.no,r.formatted,r.raw,r.gender,r.date,r.age,r.placeOfBirth,r.seq,r.chk].join('\t')));
+    content = lines.join('\n');
+    mime = 'text/plain'; ext = 'txt';
+  }
+  const blob = new Blob([content], { type: mime + ';charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `mykad_ic_${rows.length}_export.${ext}`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showToast(`Exported ${rows.length} record${rows.length===1?'':'s'}`);
+}
+
+// ============ INSTANT ANALYZE ============
+const analyzeInput = document.getElementById('analyzeInput');
+const analyzeStatus = document.getElementById('analyzeStatus');
+const analyzeResult = document.getElementById('analyzeResult');
+
+analyzeInput.addEventListener('input', function() {
+  const raw = this.value.replace(/\D/g,'');
+  if (raw.length < 12) {
+    analyzeStatus.textContent = `${raw.length}/12`;
+    analyzeStatus.style.color = 'var(--text3)';
+    analyzeResult.innerHTML = '';
+    return;
+  }
+  if (raw.length > 12) {
+    analyzeStatus.textContent = 'Too long';
+    analyzeStatus.style.color = 'var(--invalid)';
+    return;
+  }
+  runAnalysis(raw);
+});
+
+function runAnalysis(raw) {
+  const dec = decode(raw);
+  if (!dec) {
+    analyzeStatus.textContent = 'Invalid';
+    analyzeStatus.style.color = 'var(--invalid)';
+    analyzeResult.innerHTML = '<div class="card"><div class="empty-msg">Invalid identifier.</div></div>';
+    return;
+  }
+
+  const valid = dec.checksumValid && dec.dateValid;
+  analyzeStatus.innerHTML = valid
+    ? '<span style="color:var(--valid)">Valid</span>'
+    : '<span style="color:var(--invalid)">Invalid</span>';
+
+  const checksumLabel = dec.checksumValid
+    ? '<span class="badge badge-valid">Match</span>'
+    : `<span class="badge badge-invalid">Expected ${dec.computed}</span>`;
+
+  const validLabel = valid
+    ? '<span class="badge badge-valid">Valid</span>'
+    : '<span class="badge badge-invalid">Invalid</span>';
+
+  analyzeResult.innerHTML = `
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:4px">
+        <div>
+          <div class="id-display">${formatDashed(dec.digits)}</div>
+          <div class="id-raw">${dec.raw}</div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span class="tag tag-${dec.cls.toLowerCase()}">${genderLabel(dec.cls)}</span>
+          ${validLabel}
+        </div>
+      </div>
+
+      <div class="detail-grid">
+        <div class="detail-item"><label>Full Date</label><span>${dec.dateStr}</span></div>
+        <div class="detail-item"><label>Current Age</label><span>${dec.age}</span></div>
+        <div class="detail-item"><label>Century Rule</label><span>D9=${dec.raw[8]} ${parseInt(dec.raw[8],10)>=5?'&ge; 5':'&lt; 5'} &rarr; ${dec.century}s</span></div>
+        <div class="detail-item"><label>Place of Birth</label><span>${dec.rc} &mdash; ${dec.region}</span></div>
+        <div class="detail-item"><label>Sequence</label><span>${dec.seqStr} (${parseInt(dec.seqStr,10)})</span></div>
+        <div class="detail-item"><label>Check Digit (D12)</label><span>${dec.chk}</span></div>
+        <div class="detail-item"><label>Checksum</label>${checksumLabel}</div>
+        <div class="detail-item"><label>Date Valid</label><span>${dec.dateValid ? 'Yes' : 'No'}</span></div>
+        <div class="detail-item"><label>Gender</label><span>D12=${dec.chk} ${dec.chk%2===1?'(odd)':'(even)'} &rarr; ${genderLabel(dec.cls)}</span></div>
+      </div>
+
+      <div class="checksum-box">
+        <div class="checksum-title">Checksum Computation (ISO 7064 Mod 11,2)</div>
+        S = [${dec.digits.slice(0,11).join(', ')}] &rarr; R = [${[...dec.digits.slice(0,11)].reverse().join(', ')}]<br>
+        &Sigma; = ${(() => {
+          const rev = [...dec.digits.slice(0,11)].reverse();
+          const products = rev.map((d,j) => d * WEIGHTS[j]);
+          return products.join(' + ') + ' = ' + products.reduce((a,b)=>a+b,0);
+        })()}<br>
+        ${(() => {
+          const rev = [...dec.digits.slice(0,11)].reverse();
+          const sum = rev.reduce((a,d,j) => a + d*WEIGHTS[j], 0);
+          return `${sum} mod 11 = ${sum%11} &rarr; C = (12 - ${sum%11}) mod 11 = ${(12-(sum%11))%11}`;
+        })()}
+      </div>
+
+      <div class="info-box">
+        <div class="info-title">How does D12 encode both checksum and gender?</div>
+        <p>The last digit is <strong>not freely chosen</strong> &mdash; it is always computed via ISO 7064 Mod 11,2 from the first 11 digits. JPN's system iterates through sequence numbers (D9&ndash;D11) until the computed check digit's parity matches the applicant's gender: <strong>odd = male</strong>, <strong>even = female</strong>.</p>
+        <p>For this IC, the prefix is <code>${dec.raw.slice(0,6)}-${dec.rc}-</code>. The system starts from sequence <code>${parseInt(dec.raw[8],10)>=5?'500':'001'}</code> and calculates each checksum. If the person is ${genderLabel(dec.cls).toLowerCase()}, any sequence yielding a check digit with the wrong parity is skipped. Sequence <code>${dec.seqStr}</code> produced check digit <code>${dec.chk}</code> (${dec.chk%2===1?'odd':'even'}) &mdash; a match.</p>
+        <p>Since Mod 11 produces results 0&ndash;10, any sequence where C = 10 would need the character 'X' (as used in China's Resident Identity Card). Since MyKad is digits-only, these sequences are permanently excluded (~9.1%). This leaves roughly equal capacity for male and female assignments.</p>
+        <p style="margin-top:4px;font-size:11px;color:var(--text3)">Note: the checksum algorithm is community-researched and not officially confirmed by JPN. A passing checksum does not mean an IC number is assigned to a real person.</p>
+        <p><a href="https://en.wikipedia.org/wiki/ISO/IEC_7064" target="_blank" rel="noopener">Learn more about ISO/IEC 7064 &rarr;</a></p>
+      </div>
+    </div>`;
+}
+</script>
+</body>
+</html>
