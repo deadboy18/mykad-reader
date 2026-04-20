@@ -8,6 +8,19 @@ This repository is the result of extensive research into how Malaysia's national
 
 ---
 
+## 🌐 Try the tools online
+
+The interactive tools are hosted live via GitHub Pages — no download needed:
+
+**→ [deadboy18.github.io/mykad-reader](https://deadboy18.github.io/mykad-reader/)**
+
+Direct links:
+- [IC Checksum Tutorial](https://deadboy18.github.io/mykad-reader/ic-checksum-tutorial.html) — interactive, 3 languages, narrated
+- [IC Generator & Analyzer](https://deadboy18.github.io/mykad-reader/12digits_identifier_system.html) — generate, validate, batch tools
+- [MyKad Validator](https://deadboy18.github.io/mykad-reader/mykad-validator.html) — lightweight community reference
+
+---
+
 ## Table of contents
 
 1. [What is MyKad?](#what-is-mykad)
