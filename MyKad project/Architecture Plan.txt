@@ -1,0 +1,30 @@
+┌─────────────────────────────────────────────────────────┐
+│                    MASTER SERVER PC                      │
+│                                                         │
+│  server.py (Flask + WebSocket)  port 9944               │
+│  ┌──────────────────────────────────────────────────┐  │
+│  │  SQLite DB                                        │  │
+│  │  ├── users (id, username, password_hash, role,    │  │
+│  │  │         is_active, force_logout, created_by)   │  │
+│  │  ├── sessions (token, user_id, station, expires)  │  │
+│  │  ├── stations (id, name, ip, reader, user, status)│  │
+│  │  └── records (all guest data)                    │  │
+│  └──────────────────────────────────────────────────┘  │
+│                                                         │
+│  Web UI  →  http://MASTER_IP:9944                       │
+└────────────────────┬────────────────────────────────────┘
+                     │ WebSocket (ws://MASTER_IP:9944/ws)
+     ┌───────────────┼───────────────┐
+     │               │               │
+┌────▼────┐    ┌─────▼───┐    ┌─────▼───┐
+│Station 1│    │Station 2│    │Station 3│
+│         │    │         │    │         │
+│agent.py │    │agent.py │    │agent.py │
+│  USB    │    │  USB    │    │  USB    │
+│ Reader  │    │ Reader  │    │ Reader  │
+└─────────┘    └─────────┘    └─────────┘
+     ↑               ↑               ↑
+  Staff A          Staff B         Staff C
+  (browser)       (browser)       (browser)
+  logs into       logs into       logs into
+  MASTER_IP       MASTER_IP       MASTER_IP
