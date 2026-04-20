@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyKad Tools — Interactive Tutorials & Validator</title>
+<meta name="description" content="Interactive tools for understanding Malaysia's MyKad identity card system — checksum tutorial, IC number generator, and validator.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🆔%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #fafafa;
+  --card: #ffffff;
+  --text: #09090b;
+  --text2: #52525b;
+  --text3: #a1a1aa;
+  --border: #e4e4e7;
+  --border2: #d4d4d8;
+  --accent: #18181b;
+  --accent-hover: #000000;
+  --accent-light: rgba(24,24,27,0.04);
+  --blue: #2563eb;
+  --purple: #7c3aed;
+  --orange: #ea580c;
+  --green: #059669;
+  --shadow: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+[data-theme="dark"] {
+  --bg: #09090b;
+  --card: #18181b;
+  --text: #fafafa;
+  --text2: #a1a1aa;
+  --text3: #71717a;
+  --border: #27272a;
+  --border2: #3f3f46;
+  --accent: #fafafa;
+  --accent-hover: #ffffff;
+  --accent-light: rgba(250,250,250,0.06);
+  --blue: #60a5fa;
+  --purple: #a78bfa;
+  --orange: #fb923c;
+  --green: #34d399;
+  --shadow: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.4);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #09090b;
+    --card: #18181b;
+    --text: #fafafa;
+    --text2: #a1a1aa;
+    --text3: #71717a;
+    --border: #27272a;
+    --border2: #3f3f46;
+    --accent: #fafafa;
+    --accent-hover: #ffffff;
+    --accent-light: rgba(250,250,250,0.06);
+    --blue: #60a5fa;
+    --purple: #a78bfa;
+    --orange: #fb923c;
+    --green: #34d399;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.4);
+  }
+}
+
+html, body { height: 100%; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+  transition: background 0.2s, color 0.2s;
+}
+
+.container {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 40px 20px 60px;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 48px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-logo {
+  width: 38px; height: 38px;
+  background: var(--accent);
+  color: var(--card);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 13px;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: -0.3px;
+}
+
+.brand-text {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+
+.brand-subtext {
+  font-size: 11px;
+  color: var(--text3);
+  font-weight: 500;
+}
+
+.theme-toggle {
+  width: 34px; height: 34px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text2);
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+
+.theme-toggle:hover { border-color: var(--border2); color: var(--text); }
+.theme-toggle svg { width: 16px; height: 16px; }
+
+.hero {
+  margin-bottom: 40px;
+  text-align: left;
+}
+
+.hero h1 {
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: -1.2px;
+  line-height: 1.1;
+  margin-bottom: 14px;
+}
+
+.hero p {
+  font-size: 17px;
+  color: var(--text2);
+  line-height: 1.55;
+  max-width: 620px;
+}
+
+.hero p strong { color: var(--text); font-weight: 600; }
+
+.tools-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 48px;
+}
+
+.tool-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 22px;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+}
+
+.tool-card:hover {
+  border-color: var(--border2);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.tool-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #fff;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 16px;
+  letter-spacing: -0.3px;
+}
+
+.tool-icon.blue { background: var(--blue); }
+.tool-icon.purple { background: var(--purple); }
+.tool-icon.orange { background: var(--orange); }
+
+.tool-content { flex: 1; min-width: 0; }
+
+.tool-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.tool-title h2 {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+
+.tool-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: var(--accent-light);
+  color: var(--text2);
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.tool-badge.new {
+  background: rgba(5,150,105,0.1);
+  color: var(--green);
+}
+
+.tool-badge.community {
+  background: rgba(234,88,12,0.1);
+  color: var(--orange);
+}
+
+.tool-card p {
+  font-size: 13.5px;
+  color: var(--text2);
+  line-height: 1.5;
+  margin: 0 0 10px;
+}
+
+.tool-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tool-feature {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text3);
+  padding: 2px 8px;
+  background: var(--accent-light);
+  border-radius: 4px;
+}
+
+.tool-arrow {
+  color: var(--text3);
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-top: 10px;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.tool-card:hover .tool-arrow {
+  transform: translateX(4px);
+  color: var(--text);
+}
+
+.about-section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 22px 24px;
+  margin-bottom: 32px;
+}
+
+.about-section h3 {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  letter-spacing: -0.1px;
+}
+
+.about-section p {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+
+.about-section p:last-child { margin-bottom: 0; }
+.about-section strong { color: var(--text); font-weight: 600; }
+
+.about-section a {
+  color: var(--blue);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.about-section a:hover { text-decoration: underline; }
+
+.disclaimer {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left: 3px solid #f59e0b;
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-size: 12.5px;
+  color: var(--text2);
+  line-height: 1.55;
+  margin-bottom: 32px;
+}
+
+.disclaimer strong { color: var(--text); font-weight: 600; }
+
+footer {
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 12.5px;
+  color: var(--text3);
+}
+
+footer a {
+  color: var(--text2);
+  text-decoration: none;
+  transition: color 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+footer a:hover { color: var(--text); }
+footer a svg { width: 14px; height: 14px; }
+
+.footer-links {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 560px) {
+  .container { padding: 24px 16px 40px; }
+  .hero h1 { font-size: 28px; letter-spacing: -0.8px; }
+  .hero p { font-size: 15px; }
+  .tool-card { padding: 16px; gap: 12px; }
+  .tool-icon { width: 38px; height: 38px; font-size: 14px; }
+  .tool-title h2 { font-size: 15px; }
+  .brand-subtext { display: none; }
+  header { margin-bottom: 32px; }
+  footer { flex-direction: column; align-items: flex-start; gap: 10px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="brand">
+      <div class="brand-logo">IC</div>
+      <div>
+        <div class="brand-text">MyKad Tools</div>
+        <div class="brand-subtext">Interactive reference for Malaysia's identity card</div>
+        <div class="brand-subtext">Made by Deadboy</div>
+      </div>
+    </div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"></button>
+  </header>
+
+  <section class="hero">
+    <h1>Understand how your MyKad number actually works.</h1>
+    <p>Interactive tools for exploring the <strong>Malaysian identity card</strong> system — how the 12-digit IC number is structured, how its hidden math checksum works, and how to validate any IC instantly. No installation, no sign-up. Everything runs in your browser.</p>
+  </section>
+
+  <section class="tools-grid">
+
+    <a class="tool-card" href="ic-checksum-tutorial.html">
+      <div class="tool-icon blue">01</div>
+      <div class="tool-content">
+        <div class="tool-title">
+          <h2>IC Checksum Tutorial</h2>
+          <span class="tool-badge new">Recommended</span>
+        </div>
+        <p>Learn step-by-step how the hidden math inside your IC number works. Interactive, with animations, 3 languages, and voice narration — designed so even non-technical readers can follow.</p>
+        <div class="tool-features">
+          <span class="tool-feature">14 steps</span>
+          <span class="tool-feature">EN / BM / 中文</span>
+          <span class="tool-feature">Narration</span>
+          <span class="tool-feature">Dark mode</span>
+          <span class="tool-feature">Offline</span>
+        </div>
+      </div>
+      <div class="tool-arrow">→</div>
+    </a>
+
+    <a class="tool-card" href="12digits_identifier_system.html">
+      <div class="tool-icon purple">02</div>
+      <div class="tool-content">
+        <div class="tool-title">
+          <h2>IC Generator &amp; Analyzer</h2>
+          <span class="tool-badge">Developer tool</span>
+        </div>
+        <p>Generate single or batch IC numbers for testing, or paste any 12-digit IC to analyze its components — birth date, place of birth, sequence, checksum, and gender. Exports to TXT, CSV, and JSON.</p>
+        <div class="tool-features">
+          <span class="tool-feature">Batch up to 500</span>
+          <span class="tool-feature">Full state-code reference</span>
+          <span class="tool-feature">Export formats</span>
+          <span class="tool-feature">Batch analytics</span>
+        </div>
+      </div>
+      <div class="tool-arrow">→</div>
+    </a>
+
+    <a class="tool-card" href="mykad-validator.html">
+      <div class="tool-icon orange">03</div>
+      <div class="tool-content">
+        <div class="tool-title">
+          <h2>MyKad Validator</h2>
+          <span class="tool-badge community">Community</span>
+        </div>
+        <p>An older community-built IC number validator, included as a historical reference. Lightweight and minimal — useful for quick checks or comparing implementations.</p>
+        <div class="tool-features">
+          <span class="tool-feature">Lightweight</span>
+          <span class="tool-feature">Quick check</span>
+          <span class="tool-feature">Reference implementation</span>
+        </div>
+      </div>
+      <div class="tool-arrow">→</div>
+    </a>
+
+  </section>
+
+  <section class="about-section">
+    <h3>About these tools</h3>
+    <p>These tools are part of an open research archive documenting how the Malaysian MyKad identity card works — its format, the hidden <strong>ISO 7064 Mod 11,2</strong> checksum algorithm, chip-reading via APDU commands, and OCR research. Everything is compiled from publicly available sources.</p>
+    <p>For the full technical reference, complete documentation, source code, and credits, visit the <a href="https://github.com/deadboy18/mykad-reader" target="_blank" rel="noopener">GitHub repository</a>.</p>
+  </section>
+
+  <div class="disclaimer">
+    <strong>Disclaimer:</strong> The checksum algorithm has never been officially confirmed by JPN (Jabatan Pendaftaran Negara). It was reverse-engineered by community researchers. A passing checksum does <em>not</em> mean the IC belongs to a real person — it only confirms the internal math is consistent. Do not use as sole means of identity verification. Example IC numbers shown in these tools are fictitious.
+  </div>
+
+  <footer>
+    <div>Built for curious minds.</div>
+    <div class="footer-links">
+      <a href="https://github.com/deadboy18/mykad-reader" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+        GitHub
+      </a>
+      <a href="https://github.com/deadboy18/mykad-reader/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>
+      <a href="https://github.com/deadboy18/mykad-reader#credits-and-sources" target="_blank" rel="noopener">Credits</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  const root = document.documentElement;
+  const toggle = document.getElementById('themeToggle');
+  const stored = localStorage.getItem('mykad_theme');
+  
+  const SUN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>';
+  const MOON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  
+  function applyTheme(t) {
+    root.setAttribute('data-theme', t);
+    toggle.innerHTML = t === 'dark' ? SUN : MOON;
+  }
+  
+  let current = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  applyTheme(current);
+  
+  toggle.addEventListener('click', () => {
+    current = current === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('mykad_theme', current);
+    applyTheme(current);
+  });
+</script>
+
+</body>
+</html>
