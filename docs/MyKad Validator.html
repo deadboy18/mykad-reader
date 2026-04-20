@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyKad Number Validator</title>
+    <meta name="description" content="A modern demonstration of the Malaysian IC (MyKad) Number checksum implementation."/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --border: #e5e7eb;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        h1 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .input-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .input-wrapper {
+            position: relative;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: 0.1em;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-main);
+            transition: all 0.2s ease;
+            outline: none;
+            background: #f9fafb;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            background: #ffffff;
+        }
+
+        input[type="text"]::placeholder {
+            color: #d1d5db;
+            font-weight: 500;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+            display: none; /* Hidden until input */
+        }
+
+        .result-item {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: left;
+        }
+
+        .result-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .result-value {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-main);
+            word-break: break-word;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 0.875rem;
+            margin-top: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-valid { background-color: #d1fae5; color: #065f46; }
+        .status-warning { background-color: #fef3c7; color: #92400e; }
+        .status-invalid { background-color: #fee2e2; color: #991b1b; }
+        .status-empty { display: none; }
+
+        .error-messages {
+            margin-top: 1rem;
+            color: var(--danger);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .article-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .article-card h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+        }
+
+        .article-card h2:first-child {
+            margin-top: 0;
+        }
+
+        .article-card p {
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+        }
+
+        .article-card a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .article-card a:hover {
+            text-decoration: underline;
+        }
+
+        .code-format {
+            background: #f1f5f9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+            color: var(--primary-hover);
+        }
+
+        footer {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-top: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 600px) {
+            input[type="text"] { font-size: 2rem; }
+            .input-card { padding: 1.5rem; }
+            .article-card { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>MyKad Validator</h1>
+            <p class="subtitle">Real-time ISO 7064 Mod 11,2 checksum analysis</p>
+        </header>
+        
+        <div class="input-card">
+            <noscript>
+                <div style="color: red; margin-bottom: 1rem;">Javascript is required for this tool to function.</div>
+            </noscript>
+            
+            <div class="input-wrapper">
+                <input type="text" name="ic" id="ic" placeholder="000000000000" maxlength="12" autofocus>
+            </div>
+
+            <div id="status-container" class="status-badge status-empty">Awaiting Input</div>
+            <div id="val-errors" class="error-messages"></div>
+
+            <div class="results-grid" id="results-grid">
+                <div class="result-item">
+                    <div class="result-label">Date of Birth</div>
+                    <div class="result-value" id="val-dob">-</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">Gender</div>
+                    <div class="result-value" id="val-gender">-</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">Place of Birth</div>
+                    <div class="result-value" id="val-pob">-</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">Sequence</div>
+                    <div class="result-value" id="val-seq">-</div>
+                </div>
+                <div class="result-item" style="grid-column: 1 / -1;">
+                    <div class="result-label">Checksum Analysis</div>
+                    <div class="result-value" id="val-checksum" style="font-family: monospace; font-size: 1rem;">-</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="article-card">
+            <h2>Decoding the MyKad Format</h2>
+            <p>The modern Malaysian Identity Card (MyKad) consists of 12 digits formatted as <span class="code-format">YYMMDD-PB-###G</span>.</p>
+            <p>Here, <span class="code-format">YYMMDD</span> represents the date of birth, <span class="code-format">PB</span> indicates the place of birth (state or country code), and <span class="code-format">###G</span> is a unique identifier where the final digit (<span class="code-format">G</span>) determines gender (odd for males, even for females).</p>
+            
+            <h2>The Hidden Checksum</h2>
+            <p>Unlike some national IDs, the Malaysian government hasn't officially published a checksum algorithm for the MyKad. However, extensive testing suggests it utilizes the <a href="https://en.wikipedia.org/wiki/ISO/IEC_7064" target="_blank">ISO 7064 Mod 11,2</a> algorithm—the exact same standard used in Chinese Resident Identity Cards—to calculate that final digit.</p>
+            
+            <h2>Balancing Checksum and Gender</h2>
+            <p>You might wonder how one digit can simultaneously indicate gender and act as a valid mathematical checksum. The prevailing theory is sequential iteration.</p>
+            <p>When generating an ID, the system likely iterates through sequence numbers and calculates the checksum. If the resulting final digit doesn't match the applicant's gender, it simply skips to the next sequence until a match is found. Interestingly, in a Mod 11 system where a '10' is possible (often represented by an 'X' in other countries), the MyKad system seems to just discard and skip sequences that result in a 10.</p>
+            
+            <h2>Official Secrecy</h2>
+            <p>The exact reasons remain undisclosed. While other nations openly acknowledge their checksum systems, Malaysia's JPN keeps theirs under wraps. Because of this, treat this validation method as highly probable but not officially confirmed by the government.</p>
+            
+            <h2>MyPR and MyKAS Compatibility</h2>
+            <p>This logic has been heavily tested against standard MyKad (Citizen) numbers. While rarer, it is assumed that MyPR (Permanent Resident) and MyKAS (Temporary Resident) cards follow the exact same algorithmic rules.</p>
+            
+            <h2>Legal Disclaimer</h2>
+            <p>Algorithms themselves aren't subject to copyright, making structural validation perfectly legal. However, generating or using fabricated IC numbers for fraud, impersonation, or malicious activities is strictly illegal. Use this tool responsibly and solely for structural validation testing.</p>
+            
+            <h2>Final Thoughts</h2>
+            <p>This tool was built to demonstrate how the ISO 7064 Mod 11,2 checksum applies to Malaysian ICs. It's designed to help developers implement better form validation and prevent typos in software, rather than verifying if an ID actually belongs to a real person. Acknowledging this algorithm officially would greatly benefit the local software engineering community.</p>
+        </div>
+
+        <footer>
+            by deadboy
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <script>
+        class IC {
+            static POBCodes = {
+                1: "Johor", 2: "Kedah", 3: "Kelantan", 4: "Malacca", 5: "Negeri Sembilan",
+                6: "Pahang", 7: "Penang", 8: "Perak", 9: "Perlis", 10: "Selangor",
+                11: "Terengganu", 12: "Sabah", 13: "Sarawak", 14: "Kuala Lumpur",
+                15: "Labuan", 16: "Putrajaya", 21: "Johor", 22: "Johor", 23: "Johor",
+                24: "Johor", 25: "Kedah", 26: "Kedah", 27: "Kedah", 28: "Kelantan",
+                29: "Kelantan", 30: "Malacca", 31: "Negeri Sembilan", 32: "Pahang",
+                33: "Pahang", 34: "Penang", 35: "Penang", 36: "Perak", 37: "Perak",
+                38: "Perak", 39: "Perak", 40: "Perlis", 41: "Selangor", 42: "Selangor",
+                43: "Selangor", 44: "Selangor", 45: "Terengganu", 46: "Terengganu",
+                47: "Sabah", 48: "Sabah", 49: "Sabah", 50: "Sarawak", 51: "Sarawak",
+                52: "Sarawak", 53: "Sarawak", 54: "Kuala Lumpur", 55: "Kuala Lumpur",
+                56: "Kuala Lumpur", 57: "Kuala Lumpur", 58: "Labuan", 59: "Negeri Sembilan",
+                60: "Brunei", 61: "Indonesia", 62: "Cambodia", 63: "Laos", 64: "Myanmar",
+                65: "Philippines", 66: "Singapore", 67: "Thailand", 68: "Vietnam",
+                71: "Born outside Malaysia prior to 2001", 72: "Born outside Malaysia prior to 2001",
+                74: "China", 75: "India", 76: "Pakistan", 77: "Saudi Arabia", 78: "Sri Lanka",
+                79: "Bangladesh", 82: "Unknown state", 83: "Asia-Pacific", 84: "South America",
+                85: "Africa", 86: "Europe", 87: "Britain / Ireland", 88: "Middle East",
+                89: "Far East", 90: "Caribbean", 91: "North America", 92: "Soviet Union / USSR",
+                93: "Other Countries", 98: "Stateless Person", 99: "Unspecified Nationality",
+            };
+
+            constructor(icNumber) {
+                this.icNumber = icNumber;
+                this.length = this.getLength();
+                this.dob = this.getDOB();
+                this.pob = this.getPOB();
+                this.gender = this.getGender();
+                this.sequence = this.getSequence();
+                this.calculatedChecksum = this.getCalculatedChecksum();
+                this.inputChecksum = this.getInputChecksum();
+                this.checksumValid = this.checkChecksum();
+            }
+
+            getLength() { return this.icNumber.length; }
+
+            getDOB() {
+                if (this.icNumber.length < 6) return false;
+                var month = parseInt(this.icNumber.substring(2,4));
+                var day   = parseInt(this.icNumber.substring(4,6));
+                var century = (parseInt(this.icNumber.substring(8,9)) >= 5) ? 19 : 20;
+                var year = century*100 + parseInt(this.icNumber.substring(0,2));
+                var dateStr = year.toString()+'-'+month.toString().padStart(2,'0')+'-'+day.toString().padStart(2,'0');
+                if (!moment(dateStr).isValid()) return false;
+                return dateStr;
+            }
+
+            getPOB() {
+                if (this.icNumber.length < 8) return false;
+                var pobcode = parseInt(this.icNumber.substring(6,8));
+                var pobname = IC.POBCodes[pobcode];
+                return (pobname) ? pobname : false;
+            }
+
+            getGender() {
+                if (this.icNumber.length < 12) return false;
+                var gendercode = parseInt(this.icNumber.slice(-1));
+                return (gendercode % 2 == 0) ? 'Female' : 'Male';
+            }
+
+            getSequence() {
+                if (this.icNumber.length < 11) return false;
+                var seq = parseInt(this.icNumber.substring(8,11));
+                if (isNaN(seq)) return false;
+                return seq.toString().padStart(3, '0');
+            }
+
+            getCalculatedChecksum() {
+                if (this.icNumber.length < 11) return false;
+                var icNumberWithoutLastDigit = this.icNumber.substring(0,11);
+                if (isNaN(icNumberWithoutLastDigit)) return false;
+                return this.calculateIso7064Mod112(icNumberWithoutLastDigit);
+            }
+
+            getInputChecksum() {
+                if (this.icNumber.length < 12) return false;
+                return parseInt(this.icNumber.slice(-1));
+            }
+
+            checkChecksum() {
+                var calculatedChecksum = this.getCalculatedChecksum();
+                if (calculatedChecksum === false || calculatedChecksum == 10) return false; 
+                var inputChecksum = this.getInputChecksum();
+                return calculatedChecksum == inputChecksum;
+            }
+
+            calculateIso7064Mod112(str) {
+                var workArr = str.split('').reverse();
+                function W(i) { return Math.pow(2, i - 1) % 11; }
+                function S() {
+                    var sum = 0;
+                    for (var j=0; j<11; j++) {
+                        sum += workArr[j] * W(j + 2);
+                    }
+                    return sum;
+                }
+                var checkDigit = (12 - (S() % 11)) % 11;
+                if (isNaN(checkDigit)) return false;
+                return (checkDigit == 10) ? 'X' : checkDigit.toString();
+            }
+        }
+
+        $('#ic').keyup(function(){
+            var icStr = $(this).val().replace(/\D/g,'');
+            $(this).val(icStr);
+            
+            if(icStr.length === 0) {
+                $('#results-grid').hide();
+                $('#status-container').attr('class', 'status-badge status-empty').text('Awaiting Input');
+                $('#val-errors').html('');
+                return;
+            }
+
+            $('#results-grid').show();
+            var ic = new IC(icStr);
+            var errors = [];
+            var statusClass = '';
+            var statusText = '';
+
+            if (ic.length == 12 && ic.checksumValid && ic.dob !== false && ic.pob !== false) {
+                statusClass = 'status-valid';
+                statusText = '✓ Valid IC Number';
+            } else if (ic.length == 12 && ic.dob !== false && ic.pob !== false) {
+                statusClass = 'status-warning';
+                statusText = '⚠ Checksum Mismatch';
+            } else {
+                statusClass = 'status-invalid';
+                statusText = '✕ Invalid Format';
+            }
+
+            $('#status-container').attr('class', 'status-badge ' + statusClass).text(statusText);
+
+            if (ic.length < 12) errors.push('IC number is too short (requires 12 digits).');
+            if (ic.length > 12) errors.push('IC number is too long.');
+            if (ic.length == 12 && ic.checksumValid === false) errors.push('Checksum validation failed.');
+            if (ic.length >= 6 && ic.dob === false) errors.push('Date of Birth sequence is invalid.');
+            if (ic.length >= 8 && ic.pob === false) errors.push('Place of Birth code is unrecognized.');
+
+            $('#val-errors').html(errors.join('<br>'));
+
+            $('#val-dob').text(ic.dob || '-');
+            $('#val-pob').text(ic.pob || '-');
+            $('#val-gender').text(ic.gender || '-');
+            $('#val-seq').text(ic.sequence || '-');
+
+            if (ic.length === 12) {
+                if (ic.checksumValid) {
+                    $('#val-checksum').html(`<span style="color:var(--success)">Matched: ${ic.inputChecksum}</span>`);
+                } else if (ic.calculatedChecksum === 'X') {
+                    $('#val-checksum').html(`<span style="color:var(--danger)">Failed: Input is ${ic.inputChecksum}</span><br><small style="color:var(--text-muted)">Calculated 'X' (Sequence is mathematically impossible)</small>`);
+                } else {
+                    $('#val-checksum').html(`<span style="color:var(--warning)">Failed: Input is ${ic.inputChecksum}</span><br><small style="color:var(--text-muted)">Expected: ${ic.calculatedChecksum}</small>`);
+                }
+            } else {
+                $('#val-checksum').text('Awaiting 12 digits...');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,2622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How Your IC Number Works — Interactive Tutorial</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #fafafa;
+  --card: #ffffff;
+  --text: #09090b;
+  --text2: #52525b;
+  --text3: #a1a1aa;
+  --border: #e4e4e7;
+  --border2: #d4d4d8;
+  --accent: #18181b;
+  --accent-blue: #2563eb;
+  --accent-hover: #000000;
+  --accent-light: rgba(24,24,27,0.04);
+  --date: #2563eb;
+  --place: #7c3aed;
+  --seq: #ea580c;
+  --chk: #059669;
+  --valid: #059669;
+  --valid-bg: rgba(5,150,105,0.08);
+  --invalid: #dc2626;
+  --invalid-bg: rgba(220,38,38,0.08);
+  --pink: #db2777;
+  --pink-bg: rgba(219,39,119,0.06);
+  --shadow: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-lg: 0 4px 12px rgba(0,0,0,0.06);
+  --radius: 8px;
+  --radius-lg: 10px;
+}
+
+[data-theme="dark"] {
+  --bg: #09090b;
+  --card: #18181b;
+  --text: #fafafa;
+  --text2: #a1a1aa;
+  --text3: #71717a;
+  --border: #27272a;
+  --border2: #3f3f46;
+  --accent: #fafafa;
+  --accent-blue: #3b82f6;
+  --accent-hover: #ffffff;
+  --accent-light: rgba(250,250,250,0.06);
+  --date: #60a5fa;
+  --place: #a78bfa;
+  --seq: #fb923c;
+  --chk: #34d399;
+  --valid: #34d399;
+  --valid-bg: rgba(52,211,153,0.1);
+  --invalid: #f87171;
+  --invalid-bg: rgba(248,113,113,0.1);
+  --pink: #f472b6;
+  --pink-bg: rgba(244,114,182,0.08);
+  --shadow: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-lg: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+html, body { height: 100%; }
+
+body {
+  font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+  transition: background 0.2s, color 0.2s;
+}
+
+body.lang-zh { font-family: 'Noto Sans SC', 'Inter', sans-serif; }
+
+.app {
+  max-width: 680px;
+  margin: 0 auto;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 18px 16px 28px;
+}
+
+header { margin-bottom: 20px; }
+
+.top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.brand-logo {
+  width: 32px; height: 32px;
+  background: var(--accent);
+  color: var(--card);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: -0.3px;
+  flex-shrink: 0;
+}
+
+.brand-text { min-width: 0; }
+.brand-title { font-size: 14px; font-weight: 700; letter-spacing: -0.2px; line-height: 1.2; }
+.brand-subtitle { font-size: 11px; color: var(--text3); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.lang-switcher {
+  display: flex;
+  gap: 1px;
+  background: var(--border);
+  border-radius: 6px;
+  padding: 2px;
+  margin-right: 2px;
+}
+
+.lang-btn {
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border: none;
+  background: transparent;
+  color: var(--text2);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.1px;
+}
+
+.lang-btn.active { background: var(--card); color: var(--text); box-shadow: var(--shadow); }
+.lang-btn:hover:not(.active) { color: var(--text); }
+
+.icon-btn {
+  width: 30px; height: 30px;
+  border: none;
+  background: transparent;
+  color: var(--text2);
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+
+.icon-btn:hover { background: var(--border); color: var(--text); }
+.icon-btn.active { color: var(--accent-blue); background: var(--accent-light); }
+.icon-btn svg { width: 16px; height: 16px; }
+
+@keyframes speakPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.12); }
+}
+
+.icon-btn.speaking { color: var(--accent-blue); }
+.icon-btn.speaking svg { animation: speakPulse 0.8s ease-in-out infinite; }
+
+.quick-mode-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  margin: 10px 0 0;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  width: 100%;
+  font-family: inherit;
+  color: inherit;
+}
+
+.quick-mode-card:hover { border-color: var(--text3); background: var(--accent-light); }
+
+.quick-mode-icon {
+  width: 36px; height: 36px;
+  background: var(--border);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text);
+  flex-shrink: 0;
+}
+
+.quick-mode-icon svg { width: 15px; height: 15px; }
+
+.quick-mode-card .qm-text { flex: 1; min-width: 0; }
+.quick-mode-card h4 { font-size: 13px; font-weight: 600; margin: 0 0 2px; color: var(--text); }
+.quick-mode-card p { font-size: 12px; color: var(--text2); margin: 0; line-height: 1.4; }
+.quick-mode-card .qm-arrow { color: var(--text3); font-size: 18px; flex-shrink: 0; }
+
+.progress-wrap { cursor: pointer; }
+
+.progress {
+  height: 3px;
+  background: var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 999px;
+}
+
+.step-counter { font-size: 11px; color: var(--text3); font-weight: 500; letter-spacing: 0.1px; }
+
+main { flex: 1; display: flex; flex-direction: column; }
+
+.step { animation: slideIn 0.35s ease; }
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+@keyframes bounceIn {
+  0% { transform: scale(0.5); opacity: 0; }
+  60% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes confetti {
+  0% { transform: translateY(0) rotate(0); opacity: 1; }
+  100% { transform: translateY(350px) rotate(540deg); opacity: 0; }
+}
+
+h2 {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  line-height: 1.25;
+  margin-bottom: 10px;
+}
+
+p { font-size: 15px; color: var(--text2); margin-bottom: 14px; }
+p strong { color: var(--text); font-weight: 600; }
+
+.step-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 4px;
+}
+
+.ic-row {
+  display: flex;
+  justify-content: center;
+  gap: 3px;
+  padding: 18px 8px;
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  margin: 14px 0 16px;
+  flex-wrap: wrap;
+}
+
+.digit {
+  width: 32px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 17px;
+  font-weight: 600;
+  background: var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="dark"] .digit { background: #27272a; }
+
+.digit.date { color: var(--date); background: rgba(37,99,235,0.08); }
+.digit.place { color: var(--place); background: rgba(124,58,237,0.08); }
+.digit.seq { color: var(--seq); background: rgba(234,88,12,0.08); }
+.digit.chk { color: var(--chk); background: rgba(5,150,105,0.08); }
+.digit.dim { opacity: 0.2; }
+.digit.highlight {
+  transform: scale(1.1);
+  box-shadow: 0 0 0 2px var(--accent-blue);
+  z-index: 2;
+}
+.digit.empty { background: transparent; border: 1.5px dashed var(--border2); color: var(--text3); }
+.digit.appearing { animation: bounceIn 0.45s ease; }
+.digit.sourcing { background: #fbbf24; color: #78350f; transform: scale(1.08); }
+
+[data-theme="dark"] .digit.sourcing { background: #fbbf24; color: #78350f; }
+
+.digit-gap { width: 7px; }
+
+.ic-labels {
+  display: flex;
+  justify-content: center;
+  gap: 3px;
+  margin-top: -8px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.ic-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 3px 7px;
+  border-radius: 4px;
+  color: #fff;
+}
+
+[data-theme="dark"] .ic-label { color: #09090b; }
+
+.ic-label.date { background: var(--date); }
+.ic-label.place { background: var(--place); }
+.ic-label.seq { background: var(--seq); }
+.ic-label.chk { background: var(--chk); }
+
+.info-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+
+.info-card.accent { background: var(--accent-light); }
+.info-card.valid { background: var(--valid-bg); border-color: var(--valid); }
+
+.info-card h3 { font-size: 13px; font-weight: 600; margin-bottom: 4px; color: var(--text); }
+.info-card p { font-size: 13px; margin-bottom: 0; color: var(--text2); }
+.info-card .age-pill {
+  display: inline-block;
+  background: var(--accent);
+  color: var(--card);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin-left: 6px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.expand-btn {
+  margin-top: 8px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 12px;
+  background: var(--border);
+  color: var(--text);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.expand-btn:hover { background: var(--border2); }
+
+.states-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+
+.states-panel.open { max-height: 500px; overflow-y: auto; margin-top: 10px; }
+
+.states-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+
+.states-table td {
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text2);
+}
+
+.states-table td:first-child {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  color: var(--place);
+  width: 48px;
+}
+
+.states-table tr.current td { background: var(--accent-light); color: var(--text); font-weight: 600; }
+
+.states-section-title {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 10px 8px 4px;
+}
+
+.dual-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.dual-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+}
+
+.dual-card .tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  color: var(--card);
+  background: var(--accent);
+}
+
+.dual-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.dual-card p { font-size: 12px; margin: 0; color: var(--text2); line-height: 1.45; }
+
+.gender-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.gender-col {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px 10px;
+  text-align: center;
+}
+
+.gender-col.male { border-color: var(--date); }
+.gender-col.female { border-color: var(--pink); }
+
+.gender-col .label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 10px;
+  display: block;
+  color: var(--text2);
+}
+
+.digit-row-mini {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.digit-mini {
+  width: 26px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 5px;
+  background: var(--border);
+  color: var(--text2);
+}
+
+.digit-mini.active-m { background: var(--date); color: #fff; transform: scale(1.15); }
+.digit-mini.active-f { background: var(--pink); color: #fff; transform: scale(1.15); }
+
+.gender-result {
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text);
+}
+
+.flip-container { margin: 14px 0; }
+
+.flip-section-title {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.flip-row {
+  display: flex;
+  justify-content: center;
+  gap: 3px;
+  padding: 14px 8px;
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.flip-arrow { text-align: center; font-size: 18px; margin: 6px 0; color: var(--text3); }
+
+.play-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 10px auto 0;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 16px;
+  background: var(--accent);
+  color: var(--card);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.play-btn:hover { background: var(--accent-hover); }
+.play-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.play-btn svg { width: 12px; height: 12px; }
+
+.play-btn-wrap { display: flex; justify-content: center; }
+
+.weights-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  margin: 14px 0;
+  overflow-x: auto;
+}
+
+.weights-table {
+  display: grid;
+  grid-template-columns: auto repeat(11, 1fr);
+  gap: 3px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  min-width: 100%;
+}
+
+.weights-table .cell { padding: 6px 2px; text-align: center; border-radius: 4px; }
+.weights-table .label {
+  font-weight: 600;
+  color: var(--text3);
+  padding-right: 8px;
+  text-align: right;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.weights-table .position { color: var(--text3); }
+.weights-table .weight { font-weight: 700; color: var(--text); background: var(--border); }
+
+.mult-list { display: flex; flex-direction: column; gap: 6px; margin: 14px 0; }
+
+.mult-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr;
+  align-items: center;
+  gap: 6px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+}
+
+.mult-row:hover { border-color: var(--accent); }
+.mult-row.revealed { background: var(--valid-bg); border-color: var(--valid); }
+
+.mult-row .op { color: var(--text3); font-weight: 400; }
+.mult-row .digit-val { color: var(--seq); }
+.mult-row .weight-val { color: var(--date); }
+.mult-row .result-val { color: var(--text3); font-weight: 600; transition: color 0.2s; }
+.mult-row.revealed .result-val { color: var(--valid); }
+
+.reveal-all-btn {
+  display: block;
+  margin: 8px auto 0;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 7px 14px;
+  background: transparent;
+  color: var(--text2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.reveal-all-btn:hover { border-color: var(--text3); color: var(--text); }
+
+.calc-display {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 16px;
+  margin: 14px 0;
+  text-align: center;
+}
+
+.calc-display .expression {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--text2);
+  margin-bottom: 10px;
+  line-height: 1.7;
+  word-wrap: break-word;
+}
+
+.calc-display .equals-label {
+  font-size: 11px;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.calc-display .total {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.5px;
+}
+
+.calc-display .div-line {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.calc-display .highlight-num {
+  background: var(--valid-bg);
+  color: var(--valid);
+  padding: 2px 10px;
+  border-radius: 5px;
+  font-weight: 700;
+}
+
+.calc-display .div-note {
+  font-size: 12px;
+  color: var(--text3);
+  margin-top: 8px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.formula-display {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 16px;
+  margin: 14px 0;
+  text-align: center;
+}
+
+.formula-line {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 17px;
+  font-weight: 600;
+  margin: 6px 0;
+  color: var(--text);
+}
+
+.formula-line .var { color: var(--seq); font-weight: 700; }
+.formula-line .result { color: var(--valid); font-weight: 700; }
+
+.formula-note { font-size: 12px; color: var(--text3); margin-top: 10px; font-style: italic; }
+
+.reveal { text-align: center; padding: 12px 0 6px; position: relative; }
+
+.reveal-match { font-size: 48px; margin-bottom: 6px; animation: pop 0.7s ease; }
+
+.reveal-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--valid);
+  margin-bottom: 12px;
+  letter-spacing: -0.3px;
+}
+
+.reveal-title.fail { color: var(--invalid); }
+
+.reveal-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.reveal-box {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  text-align: center;
+}
+
+.reveal-box.match { border-color: var(--valid); background: var(--valid-bg); }
+.reveal-box.fail { border-color: var(--invalid); background: var(--invalid-bg); }
+
+.reveal-box .label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 6px;
+}
+
+.reveal-box .value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--valid);
+  line-height: 1;
+}
+
+.reveal-box.fail .value { color: var(--invalid); }
+
+.confetti-piece {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  animation: confetti 1.8s ease-out forwards;
+  pointer-events: none;
+}
+
+.ap-caption-bar {
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  padding: 10px 0;
+  margin-bottom: 10px;
+  z-index: 5;
+  border-bottom: 1px solid var(--border);
+}
+
+.ap-caption {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  text-align: center;
+  margin-bottom: 6px;
+  min-height: 21px;
+  transition: opacity 0.2s;
+}
+
+.ap-time-progress {
+  height: 2px;
+  background: var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.ap-time-bar {
+  height: 100%;
+  background: var(--accent);
+  width: 0%;
+  border-radius: 999px;
+}
+
+.ap-phase {
+  opacity: 0;
+  transform: translateY(12px);
+  max-height: 0;
+  overflow: hidden;
+  transition: opacity 0.5s ease, transform 0.5s ease, max-height 0.6s ease, margin-bottom 0.4s;
+  margin-bottom: 0;
+}
+
+.ap-phase.visible {
+  opacity: 1;
+  transform: translateY(0);
+  max-height: 600px;
+  margin-bottom: 14px;
+}
+
+.ap-phase-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text3);
+  font-weight: 600;
+  margin-bottom: 6px;
+  padding: 0 4px;
+}
+
+.ap-mult-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 12px;
+}
+
+.ap-mult-cell {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 6px;
+  text-align: center;
+  border-radius: 5px;
+  background: var(--border);
+  color: var(--text3);
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+[data-theme="dark"] .ap-mult-cell { background: #27272a; }
+
+.ap-mult-cell.visible {
+  opacity: 1;
+  transform: scale(1);
+  background: var(--valid-bg);
+  color: var(--valid);
+}
+
+.ap-mult-cell .inline-op { color: var(--text3); margin: 0 2px; font-weight: 400; }
+.ap-mult-cell.visible .inline-op { color: inherit; opacity: 0.5; }
+
+.ap-controls {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+  justify-content: center;
+}
+
+.ap-control-btn {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 9px 18px;
+  background: var(--accent);
+  color: var(--card);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ap-control-btn svg { width: 12px; height: 12px; }
+.ap-control-btn:hover { opacity: 0.9; }
+
+.features-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.feature-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px 12px;
+}
+
+.feature-card.highlight { background: var(--valid-bg); border-color: var(--valid); }
+
+.feature-icon {
+  width: 32px; height: 32px;
+  border-radius: 6px;
+  background: var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.feature-card.highlight .feature-icon { background: rgba(5,150,105,0.15); color: var(--valid); }
+.feature-icon svg { width: 16px; height: 16px; }
+
+.feature-card h4 { font-size: 13px; font-weight: 600; margin-bottom: 3px; color: var(--text); }
+.feature-card p { font-size: 11px; color: var(--text2); margin: 0; line-height: 1.45; }
+
+.input-group {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  margin: 12px 0;
+}
+
+.input-group label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 8px;
+}
+
+.input-group input {
+  width: 100%;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 17px;
+  font-weight: 500;
+  padding: 10px 14px;
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  letter-spacing: 1px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.input-group input:focus { border-color: var(--accent); }
+
+.quick-result {
+  margin-top: 12px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  display: none;
+}
+
+.quick-result.show { display: block; animation: fadeUp 0.3s ease; }
+.quick-result.valid { background: var(--valid-bg); color: var(--valid); border: 1px solid var(--valid); }
+.quick-result.invalid { background: var(--invalid-bg); color: var(--invalid); border: 1px solid var(--invalid); }
+.quick-result strong { font-family: 'JetBrains Mono', monospace; }
+
+.disclaimer {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left: 3px solid #f59e0b;
+  border-radius: 6px;
+  padding: 12px 14px;
+  font-size: 12px;
+  color: var(--text2);
+  margin: 14px 0;
+  line-height: 1.55;
+}
+
+.disclaimer strong { color: var(--text); font-weight: 600; }
+
+.wiki-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--accent-blue);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.wiki-link:hover { text-decoration: underline; }
+
+.tip {
+  font-size: 12px;
+  color: var(--text3);
+  padding: 8px 12px;
+  border-left: 2px solid var(--border2);
+  margin: 10px 0;
+}
+
+.voice-hint {
+  font-size: 11px;
+  color: var(--text3);
+  text-align: center;
+  margin: 8px 0;
+  padding: 8px 12px;
+  background: var(--accent-light);
+  border-radius: 6px;
+  display: none;
+}
+
+.voice-hint.show { display: block; animation: fadeUp 0.3s ease; }
+.voice-hint strong { color: var(--accent-blue); }
+
+footer {
+  padding-top: 16px;
+  margin-top: 18px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 10px;
+}
+
+button.btn {
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 11px 20px;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.1px;
+}
+
+.btn-next { background: var(--accent); color: var(--card); flex: 1; }
+.btn-next:hover { background: var(--accent-hover); }
+
+.btn-back {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-back:hover:not(:disabled) { border-color: var(--border2); }
+.btn-back:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.btn-outline {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  width: 100%;
+  margin-top: 8px;
+}
+
+.btn-outline:hover { border-color: var(--border2); }
+
+.btn-filled {
+  background: var(--accent);
+  color: var(--card);
+  width: 100%;
+  margin-top: 8px;
+  border: none;
+}
+
+.btn-filled:hover { background: var(--accent-hover); }
+
+.kbd-hint {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 8px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.kbd { background: var(--border); padding: 1px 5px; border-radius: 3px; font-size: 10px; }
+
+@media (max-width: 480px) {
+  .app { padding: 14px 10px 20px; }
+  h2 { font-size: 19px; }
+  p { font-size: 14px; }
+  .digit { width: 26px; height: 36px; font-size: 13px; }
+  .digit-gap { width: 5px; }
+  .ic-row, .flip-row { padding: 12px 5px; gap: 3px; }
+  .dual-grid, .features-grid { grid-template-columns: 1fr; }
+  .mult-row { font-size: 13px; padding: 9px 10px; gap: 4px; }
+  .calc-display .total { font-size: 28px; }
+  .calc-display .expression { font-size: 11px; }
+  .calc-display .div-line, .formula-line { font-size: 15px; }
+  .reveal-match { font-size: 40px; }
+  .reveal-title { font-size: 18px; }
+  .reveal-box .value { font-size: 32px; }
+  .weights-table { font-size: 10px; }
+  .weights-table .cell { padding: 5px 1px; }
+  .digit-mini { width: 22px; height: 26px; font-size: 11px; }
+  .brand-title { font-size: 13px; }
+  .brand-subtitle { display: none; }
+  .lang-btn { padding: 4px 6px; font-size: 10px; }
+  .ap-mult-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="top-row">
+      <div class="brand">
+        <div class="brand-logo">IC</div>
+        <div class="brand-text">
+          <div class="brand-title" id="brandTitle">How Your IC Number Works</div>
+          <div class="brand-subtitle" id="brandSubtitle">Understanding the MyKad checksum</div>
+        </div>
+      </div>
+      <div class="header-controls">
+        <div class="lang-switcher" id="langSwitcher">
+          <button class="lang-btn active" data-lang="en">EN</button>
+          <button class="lang-btn" data-lang="bm">BM</button>
+          <button class="lang-btn" data-lang="zh">中文</button>
+        </div>
+        <button class="icon-btn" id="voiceBtn" aria-label="Toggle narration" title="Toggle narration"></button>
+        <button class="icon-btn" id="themeBtn" aria-label="Toggle theme" title="Toggle theme"></button>
+      </div>
+    </div>
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+      <div class="step-counter"><span id="stepLabel">Step</span> <span id="stepNum">1</span> <span id="ofLabel">of</span> <span id="stepTotal">14</span></div>
+    </div>
+    <div class="voice-hint" id="voiceHint"></div>
+  </header>
+
+  <main id="stage"></main>
+
+  <footer>
+    <button class="btn btn-back" id="backBtn" disabled><span id="backText">Back</span></button>
+    <button class="btn btn-next" id="nextBtn"><span id="nextText">Start</span></button>
+  </footer>
+  <div class="kbd-hint"><span class="kbd">←</span> <span class="kbd">→</span> <span id="kbdHintText">to navigate</span></div>
+</div>
+
+<script>
+const WEIGHTS = [2, 4, 8, 5, 10, 9, 7, 3, 6, 1, 2];
+const DEFAULT_IC = '900523075049';
+const AUTOPLAY_STEP = 11;
+
+const STATES = {
+  '01': { en: 'Johor', bm: 'Johor', zh: '柔佛' },
+  '02': { en: 'Kedah', bm: 'Kedah', zh: '吉打' },
+  '03': { en: 'Kelantan', bm: 'Kelantan', zh: '吉兰丹' },
+  '04': { en: 'Melaka', bm: 'Melaka', zh: '马六甲' },
+  '05': { en: 'Negeri Sembilan', bm: 'Negeri Sembilan', zh: '森美兰' },
+  '06': { en: 'Pahang', bm: 'Pahang', zh: '彭亨' },
+  '07': { en: 'Pulau Pinang', bm: 'Pulau Pinang', zh: '槟城' },
+  '08': { en: 'Perak', bm: 'Perak', zh: '霹雳' },
+  '09': { en: 'Perlis', bm: 'Perlis', zh: '玻璃市' },
+  '10': { en: 'Selangor', bm: 'Selangor', zh: '雪兰莪' },
+  '11': { en: 'Terengganu', bm: 'Terengganu', zh: '登嘉楼' },
+  '12': { en: 'Sabah', bm: 'Sabah', zh: '沙巴' },
+  '13': { en: 'Sarawak', bm: 'Sarawak', zh: '砂拉越' },
+  '14': { en: 'Kuala Lumpur (WP)', bm: 'Kuala Lumpur (WP)', zh: '吉隆坡' },
+  '15': { en: 'Labuan (WP)', bm: 'Labuan (WP)', zh: '纳闽' },
+  '16': { en: 'Putrajaya (WP)', bm: 'Putrajaya (WP)', zh: '布城' }
+};
+
+const FOREIGN = {
+  '60': { en: 'Brunei', bm: 'Brunei', zh: '文莱' },
+  '61': { en: 'Indonesia', bm: 'Indonesia', zh: '印尼' },
+  '62': { en: 'Cambodia', bm: 'Kemboja', zh: '柬埔寨' },
+  '63': { en: 'Laos', bm: 'Laos', zh: '老挝' },
+  '64': { en: 'Myanmar', bm: 'Myanmar', zh: '缅甸' },
+  '65': { en: 'Philippines', bm: 'Filipina', zh: '菲律宾' },
+  '66': { en: 'Singapore', bm: 'Singapura', zh: '新加坡' },
+  '67': { en: 'Thailand', bm: 'Thailand', zh: '泰国' },
+  '68': { en: 'Vietnam', bm: 'Vietnam', zh: '越南' },
+  '74': { en: 'China', bm: 'China', zh: '中国' },
+  '75': { en: 'India', bm: 'India', zh: '印度' },
+  '76': { en: 'Pakistan', bm: 'Pakistan', zh: '巴基斯坦' },
+  '82': { en: 'Unknown', bm: 'Tidak diketahui', zh: '未知' },
+  '83': { en: 'Asia-Pacific', bm: 'Asia-Pasifik', zh: '亚太地区' },
+  '85': { en: 'Africa', bm: 'Afrika', zh: '非洲' },
+  '86': { en: 'Europe', bm: 'Eropah', zh: '欧洲' },
+  '87': { en: 'UK / Ireland', bm: 'UK / Ireland', zh: '英国/爱尔兰' },
+  '88': { en: 'Middle East', bm: 'Timur Tengah', zh: '中东' },
+  '89': { en: 'Far East', bm: 'Timur Jauh', zh: '远东' },
+  '91': { en: 'North America', bm: 'Amerika Utara', zh: '北美洲' }
+};
+
+const L = {
+  en: {
+    brand_title: 'How Your IC Number Works',
+    brand_subtitle: 'Understanding the MyKad checksum',
+    step: 'Step', of: 'of', back: 'Back', next: 'Next',
+    lets_go: 'Start', try_own: 'Try your own', start_over: 'Start over',
+    kbd_hint: 'to navigate',
+    quick_mode_title: 'Quick mode',
+    quick_mode_p: 'Skip the walkthrough and jump straight to the full animation',
+    voice_on_hint: 'Narration <strong>on</strong> — voice will read each step aloud',
+    voice_off_hint: 'Narration <strong>off</strong>',
+    voice_unavailable: 'Voice not available in this browser',
+    
+    s0_h: "Let's decode your IC number",
+    s0_p1: "Your 12-digit IC number might look random, but every digit has a specific meaning. The last one is especially clever — it's the answer to a hidden math equation that proves the IC is genuine.",
+    s0_p2: "No math background needed. This tutorial walks through each step.",
+    s0_example: 'Example IC we\'ll use:',
+    s0_tip: 'Tap numbers, buttons, and animations as you go to explore.',
+    s0_speech: "Let's decode your IC number. Your twelve-digit IC number might look random, but every digit has a specific meaning.",
+    
+    s1_h: 'Every digit has a purpose',
+    s1_p: 'Your 12-digit IC splits into four color-coded groups. Each group encodes different information:',
+    s1_birthday: 'Date of birth',
+    s1_born_on: 'Born on',
+    s1_years_old: 'years old',
+    s1_place: 'Place of birth',
+    s1_place_meaning: 'A 2-digit code for the state (or country, if born abroad)',
+    s1_see_codes: 'See all state codes',
+    s1_hide_codes: 'Hide codes',
+    s1_malaysian_states: 'Malaysian states',
+    s1_foreign_codes: 'Foreign countries (selected)',
+    s1_seq: 'Sequence number',
+    s1_seq_meaning: 'A number assigned by the government registry',
+    s1_special: 'The special digit',
+    s1_special_meaning: 'This digit performs two jobs at once. Continue to see how.',
+    s1_speech: 'Every digit has a purpose. Your IC splits into four color-coded groups: date of birth, place of birth, sequence number, and a special last digit.',
+    
+    s2_h: 'The last digit does two jobs',
+    s2_p: 'The final digit (<strong>%LAST%</strong>) isn\'t placed randomly. It serves two purposes simultaneously:',
+    s2_job1: 'Job 1', s2_job1_title: 'Indicates gender',
+    s2_odd_male: 'Odd = Male', s2_even_female: 'Even = Female',
+    s2_your_last: 'Your last digit:',
+    s2_job2: 'Job 2', s2_job2_title: 'Math checksum',
+    s2_job2_p: 'Using the other 11 digits, there is exactly one correct value this digit can be. If it doesn\'t match, the IC is invalid.',
+    s2_all_odd: 'Odd digits — Male',
+    s2_all_even: 'Even digits — Female',
+    s2_result_male: 'is odd — Male',
+    s2_result_female: 'is even — Female',
+    s2_ready: 'Let\'s walk through the math, one step at a time.',
+    s2_speech: 'The last digit does two jobs. First, it shows gender: odd means male, even means female. Second, it is a math checksum calculated from the other eleven digits.',
+    
+    s3_h: 'Step 1: Set aside the last digit',
+    s3_p1: 'We\'ll pretend we don\'t know the last digit. Using the first 11 digits, we\'ll calculate what it <strong>should</strong> be.',
+    s3_p2: 'If our calculated value matches the real last digit, the IC is valid.',
+    s3_greyed: 'Greyed out — we\'ll verify this at the end',
+    s3_eleven: 'The 11 digits we\'ll work with:',
+    s3_speech: 'Step one. Set aside the last digit. We will calculate what it should be using the first eleven digits.',
+    
+    s4_h: 'Step 2: Reverse the order',
+    s4_p: 'Take those 11 digits and flip them backwards. This is required by the formula — the rightmost digit becomes the leftmost, and so on.',
+    s4_original: 'Original', s4_flipped: 'Reversed',
+    s4_play: 'Play animation', s4_replay: 'Replay',
+    s4_tip: 'Watch each digit jump from the top row to its new position on the bottom row.',
+    s4_speech: 'Step two. Reverse the order of the eleven digits. The rightmost becomes the leftmost.',
+    
+    s5_h: 'Step 3: The weights',
+    s5_p: 'Each position has a fixed multiplier, called a "weight". These eleven weights are <strong>constant</strong> — every Malaysian IC uses the same set.',
+    s5_pos: 'Position', s5_weight: 'Weight',
+    s5_nerd: 'The weights come from powers of 2 in modular arithmetic (ISO 7064 Mod 11,2). You don\'t need to memorize them.',
+    s5_memorize: 'No need to memorize. Just know they exist and never change.',
+    s5_speech: 'Step three. Each position has a fixed multiplier called a weight. These never change. Every Malaysian IC uses the same weights.',
+    
+    s6_h: 'Step 4: Multiply each digit by its weight',
+    s6_p: 'Pair each reversed digit with its weight and multiply. Tap any row to reveal the result.',
+    s6_reveal_all: 'Reveal all',
+    s6_speech: 'Step four. Multiply each reversed digit by its matching weight.',
+    
+    s7_h: 'Step 5: Sum the results',
+    s7_p: 'Add every product together:',
+    s7_equals: 'total',
+    s7_p2: 'The sum is <strong>%SUM%</strong>. Almost there.',
+    s7_speech: 'Step five. Add all the products together to get a single sum.',
+    
+    s8_h: 'Step 6: Divide by 11, keep the remainder',
+    s8_p: 'Divide the sum (<strong>%SUM%</strong>) by 11. We only care about the remainder.',
+    s8_because: 'because', s8_and: 'and',
+    s8_p2: 'The remainder is <strong>%REM%</strong>.',
+    s8_speech: 'Step six. Divide the sum by eleven and keep only the remainder.',
+    
+    s9_h: 'Step 7: Apply the final formula',
+    s9_p: 'Subtract the remainder from 12, then take mod 11.',
+    s9_mod_note: '("mod 11" means: if the result is 11 or more, subtract 11.)',
+    s9_mod_nope: '(The result is already ≤ 10, so "mod 11" has no effect here.)',
+    s9_predicted: 'Our <strong>calculated last digit</strong>:',
+    s9_compare: 'Now let\'s compare with the actual last digit.',
+    s9_speech: 'Step seven. Subtract the remainder from twelve, then apply mod eleven. This gives our calculated last digit.',
+    
+    s10_match: 'Match — IC is valid',
+    s10_no_match: 'No match — invalid',
+    s10_we_predicted: 'Calculated', s10_actual: 'Actual',
+    s10_valid_title: 'The math checks out',
+    s10_valid_p: 'This IC is valid. A single-digit typo would cause the math to fail, which the system would catch immediately.',
+    s10_bonus_title: 'Gender verification',
+    s10_bonus_p: 'Last digit <strong>%LAST%</strong>',
+    s10_fail_title: 'Math doesn\'t pass',
+    s10_fail_p: 'Either a typo, or an invalid IC. Valid ICs always pass this check.',
+    s10_next: 'Next: see the whole calculation play out in a single animation.',
+    s10_speech_match: 'Match. The calculated digit equals the actual last digit. This IC is valid.',
+    s10_speech_fail: 'No match. The calculated digit does not equal the actual last digit. This IC is invalid.',
+    
+    sA_h: 'The whole thing, in one animation',
+    sA_p: 'Watch the entire calculation flow from start to finish. No buttons, no steps — just the math unfolding.',
+    sA_play: 'Play full animation', sA_replay: 'Replay animation',
+    sA_cap_ready: 'Ready when you are.',
+    sA_cap_intro: 'Taking the first 11 digits',
+    sA_cap_flip: 'Reversing them',
+    sA_cap_mult: 'Multiplying each by its weight',
+    sA_cap_sum: 'Summing everything',
+    sA_cap_divide: 'Dividing by 11, taking the remainder',
+    sA_cap_formula: 'Final formula',
+    sA_cap_reveal_match: 'Checksum matches — IC is valid',
+    sA_cap_reveal_fail: 'Checksum fails — IC is invalid',
+    sA_phase_digits: 'The 11 digits', sA_phase_flipped: 'Reversed',
+    sA_phase_mult: 'Each × weight', sA_phase_sum: 'Sum',
+    sA_phase_divide: 'Division', sA_phase_formula: 'Formula', sA_phase_reveal: 'Result',
+    sA_speech: 'The whole calculation, in one animation.',
+    
+    s11_h: 'More than just math',
+    s11_p: 'The checksum is one layer of security. The physical MyKad has additional features that make forgery very difficult:',
+    s11_f1_title: 'Laser engraving',
+    s11_f1_p: 'The IC number is burned inside the card with a laser — it cannot be scratched off.',
+    s11_f2_title: 'Rainbow printing',
+    s11_f2_p: 'Colors shift from red to purple when the card is tilted. Difficult to photocopy.',
+    s11_f3_title: 'Guilloche pattern',
+    s11_f3_p: 'Intricate interlocking curves in the background, nearly impossible to reproduce.',
+    s11_f4_title: 'Ghost image',
+    s11_f4_p: 'A second, smaller portrait of the holder. Forgers often miss this detail.',
+    s11_f5_title: 'UV ink',
+    s11_f5_p: 'Invisible under normal light, glows under UV. Additional hidden markings.',
+    s11_f6_title: 'Smart chip',
+    s11_f6_p: 'An embedded chip stores the photo, fingerprints, and personal data — encrypted.',
+    s11_f7_title: 'Anti-copy protection',
+    s11_f7_p: 'Micro-printing and moiré patterns produce visible artifacts when photocopied.',
+    s11_f8_title: 'The math checksum',
+    s11_f8_p: 'The algorithm you just learned. Automatically detects typos and invalid IDs.',
+    s11_p2: 'Together, these features make MyKad forgery practically impossible without substantial specialized equipment.',
+    s11_speech: 'More than just math. The physical MyKad has many additional security features that make forgery very difficult.',
+    
+    s12_h: 'Try your own IC',
+    s12_p: 'Enter any 12-digit IC number to verify it live, using the same algorithm you just learned.',
+    s12_label: 'Enter 12 digits (no dashes)',
+    s12_valid: '<strong>Valid.</strong> Math passes. Calculated: %PRED%, actual: %LAST%. Gender: %GENDER%.',
+    s12_invalid: '<strong>Invalid.</strong> Calculated last digit should be %PRED%, but got %LAST%.',
+    s12_walk: 'Walk through this IC step-by-step',
+    s12_restart_default: 'Restart with example IC',
+    s12_disclaimer_title: 'Important disclaimer',
+    s12_disclaimer: 'This algorithm was <strong>never officially confirmed</strong> by JPN (Jabatan Pendaftaran Negara). It was reverse-engineered by developers testing thousands of real ICs. It matches real IC numbers with near-perfect accuracy, but a passing check does not mean an IC belongs to a real person — it only verifies the internal math is consistent.',
+    s12_learn_more: 'Learn more about ISO 7064 on Wikipedia',
+    s12_made_with: 'Built to make the hidden math visible.',
+    s12_speech: 'Try your own IC. Enter any twelve digit number to verify it live.',
+    
+    male: 'Male', female: 'Female'
+  },
+  
+  bm: {
+    brand_title: 'Cara IC Anda Berfungsi',
+    brand_subtitle: 'Memahami checksum MyKad',
+    step: 'Langkah', of: 'daripada', back: 'Kembali', next: 'Seterusnya',
+    lets_go: 'Mula', try_own: 'Cuba IC anda', start_over: 'Mula semula',
+    kbd_hint: 'untuk navigasi',
+    quick_mode_title: 'Mod pantas',
+    quick_mode_p: 'Langkau tutorial dan pergi terus ke animasi penuh',
+    voice_on_hint: 'Naratif <strong>aktif</strong> — suara akan baca setiap langkah',
+    voice_off_hint: 'Naratif <strong>mati</strong>',
+    voice_unavailable: 'Suara tidak tersedia dalam pelayar ini',
+    
+    s0_h: 'Mari kita nyahkod nombor IC anda',
+    s0_p1: 'Nombor IC 12 digit anda mungkin nampak rawak, tapi setiap digit ada makna tertentu. Yang terakhir amat pintar — ia adalah jawapan kepada persamaan matematik tersembunyi yang buktikan IC itu sah.',
+    s0_p2: 'Tak perlu latar belakang matematik. Tutorial ini akan pandu setiap langkah.',
+    s0_example: 'Contoh IC yang kita guna:',
+    s0_tip: 'Tekan nombor, butang, dan animasi semasa meneroka.',
+    s0_speech: 'Mari kita nyahkod nombor IC anda. Nombor IC dua belas digit anda mungkin nampak rawak, tapi setiap digit ada makna tertentu.',
+    
+    s1_h: 'Setiap digit ada tujuannya',
+    s1_p: 'IC 12 digit anda dibahagikan kepada empat kumpulan berwarna. Setiap kumpulan mengandungi maklumat berbeza:',
+    s1_birthday: 'Tarikh lahir',
+    s1_born_on: 'Lahir pada',
+    s1_years_old: 'tahun',
+    s1_place: 'Tempat lahir',
+    s1_place_meaning: 'Kod 2 digit untuk negeri (atau negara jika lahir di luar)',
+    s1_see_codes: 'Lihat semua kod negeri',
+    s1_hide_codes: 'Sembunyikan kod',
+    s1_malaysian_states: 'Negeri Malaysia',
+    s1_foreign_codes: 'Negara luar (terpilih)',
+    s1_seq: 'Nombor urutan',
+    s1_seq_meaning: 'Nombor yang diberikan oleh pendaftaran kerajaan',
+    s1_special: 'Digit istimewa',
+    s1_special_meaning: 'Digit ini melakukan dua kerja sekali gus. Teruskan untuk lihat.',
+    s1_speech: 'Setiap digit ada tujuannya. IC anda dibahagikan kepada empat kumpulan: tarikh lahir, tempat lahir, nombor urutan, dan satu digit istimewa di akhir.',
+    
+    s2_h: 'Digit terakhir buat dua kerja',
+    s2_p: 'Digit terakhir (<strong>%LAST%</strong>) tidak diletakkan secara rawak. Ia melakukan dua tugas serentak:',
+    s2_job1: 'Kerja 1', s2_job1_title: 'Menunjukkan jantina',
+    s2_odd_male: 'Ganjil = Lelaki', s2_even_female: 'Genap = Perempuan',
+    s2_your_last: 'Digit terakhir anda:',
+    s2_job2: 'Kerja 2', s2_job2_title: 'Checksum matematik',
+    s2_job2_p: 'Menggunakan 11 digit yang lain, hanya ada SATU nilai yang betul untuk digit ini. Jika tidak padan, IC tidak sah.',
+    s2_all_odd: 'Digit ganjil — Lelaki',
+    s2_all_even: 'Digit genap — Perempuan',
+    s2_result_male: 'adalah ganjil — Lelaki',
+    s2_result_female: 'adalah genap — Perempuan',
+    s2_ready: 'Jom lalui matematiknya, satu langkah pada satu masa.',
+    s2_speech: 'Digit terakhir buat dua kerja. Pertama, ia tunjuk jantina: ganjil bermakna lelaki, genap bermakna perempuan. Kedua, ia adalah checksum matematik.',
+    
+    s3_h: 'Langkah 1: Ketepikan digit terakhir',
+    s3_p1: 'Kita anggap kita tidak tahu digit terakhir. Menggunakan 11 digit pertama, kita akan kira <strong>nilai sepatutnya</strong>.',
+    s3_p2: 'Jika nilai yang dikira padan dengan digit terakhir sebenar, IC itu sah.',
+    s3_greyed: 'Kelabu — kita akan semak di akhir',
+    s3_eleven: '11 digit yang kita guna:',
+    s3_speech: 'Langkah satu. Ketepikan digit terakhir. Kita akan kira nilai sepatutnya menggunakan sebelas digit pertama.',
+    
+    s4_h: 'Langkah 2: Songsangkan susunan',
+    s4_p: 'Ambil 11 digit tadi dan balikkannya. Ini diperlukan oleh formula — yang paling kanan jadi yang paling kiri, dan sebaliknya.',
+    s4_original: 'Asal', s4_flipped: 'Disongsangkan',
+    s4_play: 'Main animasi', s4_replay: 'Main semula',
+    s4_tip: 'Tengok setiap digit lompat dari baris atas ke kedudukan baru di bawah.',
+    s4_speech: 'Langkah dua. Songsangkan susunan sebelas digit itu. Yang paling kanan menjadi yang paling kiri.',
+    
+    s5_h: 'Langkah 3: Pemberat',
+    s5_p: 'Setiap kedudukan ada pengganda tetap, dipanggil "pemberat". Sebelas pemberat ini <strong>malar</strong> — setiap IC Malaysia guna set yang sama.',
+    s5_pos: 'Kedudukan', s5_weight: 'Pemberat',
+    s5_nerd: 'Pemberat datang dari kuasa 2 dalam aritmetik modular (ISO 7064 Mod 11,2). Tak perlu hafal.',
+    s5_memorize: 'Tak perlu hafal. Cukup tahu ia wujud dan tidak berubah.',
+    s5_speech: 'Langkah tiga. Setiap kedudukan ada pengganda tetap dipanggil pemberat. Ia tidak pernah berubah. Setiap IC Malaysia guna pemberat yang sama.',
+    
+    s6_h: 'Langkah 4: Darab setiap digit dengan pemberatnya',
+    s6_p: 'Pasangkan setiap digit yang disongsang dengan pemberatnya dan darab. Tekan mana-mana baris untuk dedahkan hasilnya.',
+    s6_reveal_all: 'Dedahkan semua',
+    s6_speech: 'Langkah empat. Darab setiap digit yang disongsang dengan pemberatnya yang sepadan.',
+    
+    s7_h: 'Langkah 5: Jumlahkan hasilnya',
+    s7_p: 'Tambah setiap hasil darab:',
+    s7_equals: 'jumlah',
+    s7_p2: 'Jumlahnya ialah <strong>%SUM%</strong>. Hampir siap.',
+    s7_speech: 'Langkah lima. Tambah semua hasil darab untuk dapat satu jumlah.',
+    
+    s8_h: 'Langkah 6: Bahagi dengan 11, ambil baki',
+    s8_p: 'Bahagikan jumlah (<strong>%SUM%</strong>) dengan 11. Kita hanya mahukan baki.',
+    s8_because: 'kerana', s8_and: 'dan',
+    s8_p2: 'Bakinya ialah <strong>%REM%</strong>.',
+    s8_speech: 'Langkah enam. Bahagi jumlah dengan sebelas dan ambil hanya baki.',
+    
+    s9_h: 'Langkah 7: Guna formula akhir',
+    s9_p: 'Tolak baki dari 12, kemudian ambil mod 11.',
+    s9_mod_note: '("mod 11" bermaksud: jika hasil 11 atau lebih, tolak 11.)',
+    s9_mod_nope: '(Hasil sudah ≤ 10, jadi "mod 11" tidak memberi kesan di sini.)',
+    s9_predicted: '<strong>Digit terakhir yang dikira</strong>:',
+    s9_compare: 'Sekarang bandingkan dengan digit terakhir sebenar.',
+    s9_speech: 'Langkah tujuh. Tolak baki dari dua belas, kemudian guna mod sebelas. Ini beri kita digit terakhir yang dikira.',
+    
+    s10_match: 'Padan — IC sah',
+    s10_no_match: 'Tidak padan — tidak sah',
+    s10_we_predicted: 'Dikira', s10_actual: 'Sebenar',
+    s10_valid_title: 'Matematik tepat',
+    s10_valid_p: 'IC ini sah. Satu digit typo akan menyebabkan matematik gagal, yang akan dikesan oleh sistem serta-merta.',
+    s10_bonus_title: 'Pengesahan jantina',
+    s10_bonus_p: 'Digit terakhir <strong>%LAST%</strong>',
+    s10_fail_title: 'Matematik tak lulus',
+    s10_fail_p: 'Sama ada typo, atau IC tidak sah. IC sebenar sentiasa lulus semakan ini.',
+    s10_next: 'Seterusnya: lihat seluruh pengiraan dalam satu animasi.',
+    s10_speech_match: 'Padan. Digit yang dikira sama dengan digit terakhir sebenar. IC ini sah.',
+    s10_speech_fail: 'Tidak padan. Digit yang dikira tidak sama dengan digit terakhir sebenar. IC ini tidak sah.',
+    
+    sA_h: 'Keseluruhan, dalam satu animasi',
+    sA_p: 'Tonton seluruh pengiraan dari awal ke akhir. Tiada butang, tiada langkah — hanya matematik terungkap.',
+    sA_play: 'Main animasi penuh', sA_replay: 'Main semula animasi',
+    sA_cap_ready: 'Sedia bila anda sedia.',
+    sA_cap_intro: 'Mengambil 11 digit pertama',
+    sA_cap_flip: 'Membalikkannya',
+    sA_cap_mult: 'Mendarab setiap satu dengan pemberatnya',
+    sA_cap_sum: 'Menjumlahkan semuanya',
+    sA_cap_divide: 'Membahagi dengan 11, mengambil baki',
+    sA_cap_formula: 'Formula akhir',
+    sA_cap_reveal_match: 'Checksum padan — IC sah',
+    sA_cap_reveal_fail: 'Checksum gagal — IC tidak sah',
+    sA_phase_digits: '11 digit', sA_phase_flipped: 'Disongsangkan',
+    sA_phase_mult: 'Setiap × pemberat', sA_phase_sum: 'Jumlah',
+    sA_phase_divide: 'Bahagi', sA_phase_formula: 'Formula', sA_phase_reveal: 'Keputusan',
+    sA_speech: 'Keseluruhan pengiraan, dalam satu animasi.',
+    
+    s11_h: 'Lebih daripada matematik',
+    s11_p: 'Checksum hanya satu lapisan keselamatan. MyKad fizikal ada ciri tambahan yang menyukarkan pemalsuan:',
+    s11_f1_title: 'Ukiran laser',
+    s11_f1_p: 'Nombor IC dibakar dalam kad dengan laser — tidak boleh dicalar.',
+    s11_f2_title: 'Cetakan pelangi',
+    s11_f2_p: 'Warna beralih dari merah ke ungu bila kad ditilt. Sukar untuk photocopy.',
+    s11_f3_title: 'Corak guilloche',
+    s11_f3_p: 'Lengkungan rumit berselang-seli di latar, hampir mustahil dihasilkan semula.',
+    s11_f4_title: 'Imej hantu',
+    s11_f4_p: 'Gambar kedua yang lebih kecil. Pemalsu selalu terlepas pandang.',
+    s11_f5_title: 'Dakwat UV',
+    s11_f5_p: 'Tak nampak di bawah cahaya biasa, bercahaya di bawah UV. Tanda tersembunyi.',
+    s11_f6_title: 'Cip pintar',
+    s11_f6_p: 'Cip tertanam simpan gambar, cap jari, dan data peribadi — disulitkan.',
+    s11_f7_title: 'Perlindungan anti-salin',
+    s11_f7_p: 'Cetakan mikro dan corak moiré hasilkan artifak ketara bila diphotocopy.',
+    s11_f8_title: 'Checksum matematik',
+    s11_f8_p: 'Algoritma yang anda baru pelajari. Auto kesan typo dan ID tidak sah.',
+    s11_p2: 'Bersama-sama, ciri-ciri ini jadikan pemalsuan MyKad hampir mustahil tanpa peralatan khusus yang signifikan.',
+    s11_speech: 'Lebih daripada matematik. MyKad fizikal ada banyak ciri keselamatan tambahan yang menyukarkan pemalsuan.',
+    
+    s12_h: 'Cuba IC anda sendiri',
+    s12_p: 'Masukkan sebarang nombor IC 12 digit untuk sahkan secara langsung, menggunakan algoritma yang sama.',
+    s12_label: 'Masukkan 12 digit (tanpa sempang)',
+    s12_valid: '<strong>Sah.</strong> Matematik lulus. Dikira: %PRED%, sebenar: %LAST%. Jantina: %GENDER%.',
+    s12_invalid: '<strong>Tidak sah.</strong> Digit terakhir sepatutnya %PRED%, tapi dapat %LAST%.',
+    s12_walk: 'Lalui IC ini langkah demi langkah',
+    s12_restart_default: 'Mula semula dengan contoh',
+    s12_disclaimer_title: 'Nota penting',
+    s12_disclaimer: 'Algoritma ini <strong>tidak pernah disahkan secara rasmi</strong> oleh JPN (Jabatan Pendaftaran Negara). Ia ditemukan oleh pembangun yang menguji ribuan IC sebenar. Ia sepadan dengan nombor IC sebenar dengan ketepatan hampir sempurna, tetapi semakan lulus tidak bermakna IC itu milik orang sebenar — ia hanya mengesahkan matematik dalaman konsisten.',
+    s12_learn_more: 'Ketahui lebih lanjut tentang ISO 7064 di Wikipedia',
+    s12_made_with: 'Dibina untuk tunjukkan matematik yang tersembunyi.',
+    s12_speech: 'Cuba IC anda sendiri. Masukkan sebarang nombor dua belas digit untuk sahkan secara langsung.',
+    
+    male: 'Lelaki', female: 'Perempuan'
+  },
+  
+  zh: {
+    brand_title: '你的身份证是如何运作的',
+    brand_subtitle: '理解 MyKad 校验码',
+    step: '第', of: '/', back: '返回', next: '下一步',
+    lets_go: '开始', try_own: '试你自己的', start_over: '重新开始',
+    kbd_hint: '使用键盘导航',
+    quick_mode_title: '快速模式',
+    quick_mode_p: '跳过教程，直接观看完整动画',
+    voice_on_hint: '旁白<strong>开启</strong> — 语音将朗读每一步',
+    voice_off_hint: '旁白<strong>关闭</strong>',
+    voice_unavailable: '此浏览器不支持语音',
+    
+    s0_h: '破解你的身份证号码',
+    s0_p1: '你的 12 位身份证号码看起来像随机数字，但每一位都有特定含义。最后一位尤其巧妙 —— 它是一道隐藏数学方程式的答案，用来证明身份证是真的。',
+    s0_p2: '不需要数学背景。本教程将一步步带你了解。',
+    s0_example: '我们使用的示例身份证：',
+    s0_tip: '学习过程中点击数字、按钮和动画进行探索。',
+    s0_speech: '破解你的身份证号码。你的十二位身份证号码看起来像随机数字，但每一位都有特定含义。',
+    
+    s1_h: '每个数字都有用途',
+    s1_p: '你的 12 位身份证分成四个颜色组。每组编码不同的信息：',
+    s1_birthday: '出生日期',
+    s1_born_on: '出生于',
+    s1_years_old: '岁',
+    s1_place: '出生地',
+    s1_place_meaning: '2 位数代码，代表州属（或国家，如果在海外出生）',
+    s1_see_codes: '查看所有州代码',
+    s1_hide_codes: '隐藏代码',
+    s1_malaysian_states: '马来西亚各州',
+    s1_foreign_codes: '外国（部分）',
+    s1_seq: '序列号',
+    s1_seq_meaning: '政府登记处分配的号码',
+    s1_special: '特别的数字',
+    s1_special_meaning: '这一位数字同时做两件事。继续看看吧。',
+    s1_speech: '每个数字都有用途。你的身份证分成四个颜色组：出生日期、出生地、序列号，以及最后一个特别的数字。',
+    
+    s2_h: '最后一位数字做两件事',
+    s2_p: '最后一位数字（<strong>%LAST%</strong>）不是随便放的。它同时承担两个作用：',
+    s2_job1: '作用 1', s2_job1_title: '显示性别',
+    s2_odd_male: '奇数 = 男', s2_even_female: '偶数 = 女',
+    s2_your_last: '你的最后一位：',
+    s2_job2: '作用 2', s2_job2_title: '数学校验',
+    s2_job2_p: '用其他 11 位数字计算，这一位只有唯一一个正确值。如果不吻合，身份证就无效。',
+    s2_all_odd: '奇数 — 男', s2_all_even: '偶数 — 女',
+    s2_result_male: '是奇数 — 男', s2_result_female: '是偶数 — 女',
+    s2_ready: '让我们一步一步看看数学。',
+    s2_speech: '最后一位数字做两件事。第一，它显示性别：奇数表示男，偶数表示女。第二，它是一个数学校验码。',
+    
+    s3_h: '第 1 步：先放一边最后一位',
+    s3_p1: '假装我们不知道最后一位是什么。用前 11 位，我们计算它<strong>应该</strong>是什么。',
+    s3_p2: '如果我们计算的值和实际的最后一位吻合，身份证就有效。',
+    s3_greyed: '灰色 — 我们最后再验证',
+    s3_eleven: '我们用的 11 位数字：',
+    s3_speech: '第一步。把最后一位放一边。我们会用前十一位来计算它应该是什么。',
+    
+    s4_h: '第 2 步：倒过来排',
+    s4_p: '把这 11 位数字反过来。这是公式要求的 —— 最右边的变成最左边，以此类推。',
+    s4_original: '原本', s4_flipped: '反过来',
+    s4_play: '播放动画', s4_replay: '重播',
+    s4_tip: '看每个数字从上排跳到下排的新位置。',
+    s4_speech: '第二步。把这十一位数字反过来排。最右边的变成最左边。',
+    
+    s5_h: '第 3 步：权重',
+    s5_p: '每个位置都有一个固定乘数，叫"权重"。这 11 个权重是<strong>常数</strong> —— 每张马来西亚身份证都用同一组。',
+    s5_pos: '位置', s5_weight: '权重',
+    s5_nerd: '权重来自模运算中的 2 的幂（ISO 7064 Mod 11,2）。不需要记住。',
+    s5_memorize: '不需要记。知道它们存在且不变就行。',
+    s5_speech: '第三步。每个位置有一个固定乘数，叫权重。它们永远不变。每张马来西亚身份证都用同样的权重。',
+    
+    s6_h: '第 4 步：每位数字 × 它的权重',
+    s6_p: '把每个反过来的数字和它的权重配对相乘。点任意一行查看结果。',
+    s6_reveal_all: '显示全部',
+    s6_speech: '第四步。把每个反过来的数字和它相对应的权重相乘。',
+    
+    s7_h: '第 5 步：把结果加起来',
+    s7_p: '把所有乘积加在一起：',
+    s7_equals: '总和',
+    s7_p2: '总和是 <strong>%SUM%</strong>。快完成了。',
+    s7_speech: '第五步。把所有乘积加在一起，得到一个总和。',
+    
+    s8_h: '第 6 步：除以 11，取余数',
+    s8_p: '把总和（<strong>%SUM%</strong>）除以 11。我们只要余数。',
+    s8_because: '因为', s8_and: '而',
+    s8_p2: '余数是 <strong>%REM%</strong>。',
+    s8_speech: '第六步。把总和除以十一，只保留余数。',
+    
+    s9_h: '第 7 步：最后的公式',
+    s9_p: '从 12 减去余数，然后对结果做 mod 11。',
+    s9_mod_note: '（"mod 11" 的意思：如果结果 ≥ 11，减去 11。）',
+    s9_mod_nope: '（结果已经 ≤ 10，所以 "mod 11" 在这里没影响。）',
+    s9_predicted: '我们<strong>计算的最后一位</strong>：',
+    s9_compare: '现在和实际最后一位对比。',
+    s9_speech: '第七步。从十二减去余数，然后应用 mod 十一。这样得出我们计算的最后一位。',
+    
+    s10_match: '吻合 — 身份证有效',
+    s10_no_match: '不吻合 — 无效',
+    s10_we_predicted: '计算值', s10_actual: '实际值',
+    s10_valid_title: '数学对得上',
+    s10_valid_p: '这张身份证有效。一个数字打错就会让数学失败，系统会立即检测到。',
+    s10_bonus_title: '性别验证',
+    s10_bonus_p: '最后一位 <strong>%LAST%</strong>',
+    s10_fail_title: '数学不通过',
+    s10_fail_p: '要么是打字错误，要么是无效身份证。有效身份证总能通过这个检查。',
+    s10_next: '接下来：看整个计算在一个动画里完成。',
+    s10_speech_match: '吻合。计算出的数字等于实际最后一位。这张身份证有效。',
+    s10_speech_fail: '不吻合。计算出的数字不等于实际最后一位。这张身份证无效。',
+    
+    sA_h: '整个过程，一个动画',
+    sA_p: '观看从头到尾的整个计算。没有按钮，没有步骤 —— 只有数学展开。',
+    sA_play: '播放完整动画', sA_replay: '重播动画',
+    sA_cap_ready: '准备好就开始。',
+    sA_cap_intro: '取前 11 位数字',
+    sA_cap_flip: '倒过来排',
+    sA_cap_mult: '每位乘以它的权重',
+    sA_cap_sum: '全部加起来',
+    sA_cap_divide: '除以 11，取余数',
+    sA_cap_formula: '最后的公式',
+    sA_cap_reveal_match: '校验吻合 — 身份证有效',
+    sA_cap_reveal_fail: '校验不吻合 — 身份证无效',
+    sA_phase_digits: '11 位数字', sA_phase_flipped: '反过来',
+    sA_phase_mult: '每位 × 权重', sA_phase_sum: '总和',
+    sA_phase_divide: '除法', sA_phase_formula: '公式', sA_phase_reveal: '结果',
+    sA_speech: '整个计算，一个动画。',
+    
+    s11_h: '不只是数学',
+    s11_p: '校验码只是一层安全措施。实体 MyKad 还有其他特征让伪造变得很困难：',
+    s11_f1_title: '激光雕刻',
+    s11_f1_p: '身份证号码用激光烧在卡片内部 —— 刮不掉。',
+    s11_f2_title: '彩虹印刷',
+    s11_f2_p: '倾斜卡片时颜色从红变紫。难以复印。',
+    s11_f3_title: 'Guilloche 图案',
+    s11_f3_p: '背景有细密交织的曲线，几乎不可能复制。',
+    s11_f4_title: '幽灵头像',
+    s11_f4_p: '持卡人的第二张较小照片。伪造者常忽略这个细节。',
+    s11_f5_title: '紫外墨水',
+    s11_f5_p: '在普通光下看不见，紫外光下发光。额外的隐藏标记。',
+    s11_f6_title: '智能芯片',
+    s11_f6_p: '内嵌芯片存储照片、指纹和个人数据 —— 经过加密。',
+    s11_f7_title: '防复印保护',
+    s11_f7_p: '微印刷和摩尔纹图案在复印时产生明显瑕疵。',
+    s11_f8_title: '数学校验码',
+    s11_f8_p: '你刚学的算法。自动检测打字错误和无效身份证。',
+    s11_p2: '这些特征综合起来，让 MyKad 的伪造在没有大量专业设备的情况下几乎不可能。',
+    s11_speech: '不只是数学。实体 MyKad 有许多额外的物理安全特征，让伪造变得很困难。',
+    
+    s12_h: '试试你自己的身份证',
+    s12_p: '输入任何 12 位身份证号码，使用你刚学的同样算法实时验证。',
+    s12_label: '输入 12 位数字（不带横线）',
+    s12_valid: '<strong>有效。</strong>数学通过。计算值：%PRED%，实际：%LAST%。性别：%GENDER%。',
+    s12_invalid: '<strong>无效。</strong>最后一位应该是 %PRED%，但是 %LAST%。',
+    s12_walk: '用这个身份证重走一遍教程',
+    s12_restart_default: '用示例身份证重新开始',
+    s12_disclaimer_title: '重要声明',
+    s12_disclaimer: '这个算法<strong>从未被 JPN（国家登记局）官方确认</strong>。它是由开发者测试成千上万真实身份证反向推导出来的。它和真实身份证号码的匹配度接近完美，但通过检查并<strong>不代表</strong>这个身份证属于真实的人 —— 只证明内部数学是一致的。',
+    s12_learn_more: '在维基百科上了解更多 ISO 7064',
+    s12_made_with: '为了让隐藏的数学变得可见。',
+    s12_speech: '试试你自己的身份证。输入任何十二位数字来实时验证。',
+    
+    male: '男', female: '女'
+  }
+};
+
+const state = {
+  ic: DEFAULT_IC,
+  step: 0,
+  revealedMults: new Set(),
+  lang: localStorage.getItem('ic_lang') || 'en',
+  theme: localStorage.getItem('ic_theme') || 'light',
+  voiceEnabled: localStorage.getItem('ic_voice') === '1',
+  statesOpen: false,
+  flipPlayed: false,
+  autoplayTimers: [],
+  autoplayRAF: null
+};
+
+function t(key) { return L[state.lang]?.[key] ?? L.en[key] ?? key; }
+function tt(key, vars) {
+  let s = t(key);
+  if (vars) for (const k in vars) s = s.replaceAll('%' + k + '%', vars[k]);
+  return s;
+}
+
+// ============ SPEECH / NARRATION ============
+const VOICE_LANG = { en: 'en-US', bm: 'ms-MY', zh: 'zh-CN' };
+const SPEECH_SUPPORTED = 'speechSynthesis' in window;
+
+let voicesLoaded = false;
+if (SPEECH_SUPPORTED) {
+  const loadVoices = () => { voicesLoaded = speechSynthesis.getVoices().length > 0; };
+  loadVoices();
+  if (speechSynthesis.onvoiceschanged !== undefined) {
+    speechSynthesis.onvoiceschanged = loadVoices;
+  }
+}
+
+function pickVoice(langCode) {
+  if (!SPEECH_SUPPORTED) return null;
+  const voices = speechSynthesis.getVoices();
+  if (!voices.length) return null;
+  let v = voices.find(x => x.lang === langCode);
+  if (v) return v;
+  const prefix = langCode.split('-')[0];
+  v = voices.find(x => x.lang.toLowerCase().startsWith(prefix));
+  return v || null;
+}
+
+function speak(text) {
+  if (!state.voiceEnabled || !SPEECH_SUPPORTED || !text) return;
+  const clean = String(text).replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+  if (!clean) return;
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(clean);
+    const langCode = VOICE_LANG[state.lang] || 'en-US';
+    u.lang = langCode;
+    const v = pickVoice(langCode);
+    if (v) u.voice = v;
+    u.rate = 0.95;
+    u.pitch = 1;
+    u.onstart = () => { const btn = document.getElementById('voiceBtn'); if (btn) btn.classList.add('speaking'); };
+    u.onend = () => { const btn = document.getElementById('voiceBtn'); if (btn) btn.classList.remove('speaking'); };
+    u.onerror = () => { const btn = document.getElementById('voiceBtn'); if (btn) btn.classList.remove('speaking'); };
+    speechSynthesis.speak(u);
+  } catch (e) { /* silent */ }
+}
+
+function stopSpeech() {
+  if (SPEECH_SUPPORTED) speechSynthesis.cancel();
+  const btn = document.getElementById('voiceBtn');
+  if (btn) btn.classList.remove('speaking');
+}
+
+// Per-step narration lookup
+function getStepSpeech() {
+  const keys = ['s0_speech','s1_speech','s2_speech','s3_speech','s4_speech','s5_speech','s6_speech','s7_speech','s8_speech','s9_speech',null,'sA_speech','s11_speech','s12_speech'];
+  // Step 10 (reveal) needs dynamic match-based speech
+  if (state.step === 10) {
+    const d = calc(state.ic);
+    return t(d.matches ? 's10_speech_match' : 's10_speech_fail');
+  }
+  const k = keys[state.step];
+  return k ? t(k) : '';
+}
+
+// ============ MATH ============
+function calc(ic) {
+  const digits = ic.split('').map(Number);
+  const first11 = digits.slice(0, 11);
+  const last = digits[11];
+  const reversed = [...first11].reverse();
+  const products = reversed.map((d, i) => d * WEIGHTS[i]);
+  const sum = products.reduce((a, b) => a + b, 0);
+  const remainder = sum % 11;
+  const predicted = (12 - remainder) % 11;
+  const matches = predicted === last && predicted !== 10;
+  const isMale = last % 2 === 1;
+  return { digits, first11, last, reversed, products, sum, remainder, predicted, matches, isMale };
+}
+
+function formatIC(ic) { return ic.slice(0,6) + '-' + ic.slice(6,8) + '-' + ic.slice(8); }
+
+function dateParts(ic) {
+  const yy = ic.slice(0,2), mm = ic.slice(2,4), dd = ic.slice(4,6);
+  const d9 = parseInt(ic[8], 10);
+  const century = d9 >= 5 ? 1900 : 2000;
+  const year = century + parseInt(yy, 10);
+  return { yy, mm, dd, year, full: `${year}-${mm}-${dd}` };
+}
+
+function calcAge(year, month, day) {
+  const now = new Date();
+  let age = now.getFullYear() - year;
+  const m = now.getMonth() + 1 - month;
+  if (m < 0 || (m === 0 && now.getDate() < day)) age--;
+  return age < 0 || age > 150 ? null : age;
+}
+
+function getPlaceName(code) {
+  const entry = STATES[code] || FOREIGN[code];
+  return entry ? entry[state.lang] || entry.en : code;
+}
+
+function icDigitsHTML(ic, opts = {}) {
+  const d = ic.split('');
+  let html = '<div class="ic-row">';
+  d.forEach((digit, i) => {
+    let cls = 'digit';
+    if (opts.plain) cls += ' mono';
+    else if (i < 6) cls += ' date';
+    else if (i < 8) cls += ' place';
+    else if (i < 11) cls += ' seq';
+    else cls += ' chk';
+    if (opts.dim && opts.dim.includes(i)) cls += ' dim';
+    if (opts.highlight && opts.highlight.includes(i)) cls += ' highlight';
+    html += `<span class="${cls}">${digit}</span>`;
+    if (!opts.noGaps && (i === 5 || i === 7 || i === 10)) html += '<span class="digit-gap"></span>';
+  });
+  html += '</div>';
+  return html;
+}
+
+function plainDigitsHTML(digits) {
+  return '<div class="ic-row">' + digits.map(d => `<span class="digit mono">${d}</span>`).join('') + '</div>';
+}
+
+function emptySlotsHTML(count) {
+  return '<div class="flip-row" id="flipTarget">' + 
+    Array.from({length: count}, (_, i) => `<span class="digit mono empty" data-slot="${i}"></span>`).join('') + 
+    '</div>';
+}
+
+function svgIcon(path) {
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${path}</svg>`;
+}
+
+const ICONS = {
+  laser: svgIcon('<path d="M12 2v4"/><path d="m6.34 6.34-2.83 2.83"/><path d="M2 12h4"/><path d="m6.34 17.66-2.83-2.83"/><path d="M12 18v4"/><path d="m17.66 17.66 2.83-2.83"/><path d="M18 12h4"/><path d="m17.66 6.34 2.83 2.83"/><circle cx="12" cy="12" r="4"/>'),
+  rainbow: svgIcon('<path d="M22 17a10 10 0 0 0-20 0"/><path d="M6 17a6 6 0 0 1 12 0"/><path d="M10 17a2 2 0 0 1 4 0"/>'),
+  pattern: svgIcon('<circle cx="12" cy="12" r="10"/><path d="M12 2a7 7 0 0 0 0 14 7 7 0 0 1 0 14"/><path d="M12 22a7 7 0 0 0 0-14 7 7 0 0 1 0-14"/>'),
+  ghost: svgIcon('<circle cx="9" cy="9" r="1"/><circle cx="15" cy="9" r="1"/><path d="M4 22V8a8 8 0 0 1 16 0v14l-4-2-4 2-4-2-4 2Z"/>'),
+  uv: svgIcon('<circle cx="12" cy="12" r="5"/><path d="M12 1v2"/><path d="M12 21v2"/><path d="m4.22 4.22 1.42 1.42"/><path d="m18.36 18.36 1.42 1.42"/><path d="M1 12h2"/><path d="M21 12h2"/><path d="m4.22 19.78 1.42-1.42"/><path d="m18.36 5.64 1.42-1.42"/>'),
+  chip: svgIcon('<rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3"/><path d="M15 1v3"/><path d="M9 20v3"/><path d="M15 20v3"/><path d="M20 9h3"/><path d="M20 14h3"/><path d="M1 9h3"/><path d="M1 14h3"/>'),
+  copy: svgIcon('<rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/><line x1="2" y1="2" x2="22" y2="22"/>'),
+  math: svgIcon('<path d="M19 5 5 19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/>'),
+  play: svgIcon('<polygon points="6 3 20 12 6 21 6 3"/>'),
+  replay: svgIcon('<path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/>'),
+  sun: svgIcon('<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>'),
+  moon: svgIcon('<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'),
+  volumeOn: svgIcon('<path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>'),
+  volumeOff: svgIcon('<path d="M11 5 6 9H2v6h4l5 4V5Z"/><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/>')
+};
+
+// ============ STEPS ============
+const steps = [
+  () => `
+    <div class="step">
+      <h2>${t('s0_h')}</h2>
+      <p>${t('s0_p1')}</p>
+      <p>${t('s0_p2')}</p>
+      ${icDigitsHTML(state.ic)}
+      <p style="text-align:center;font-size:13px;color:var(--text3)"><em>${t('s0_example')} ${formatIC(state.ic)}</em></p>
+      <div class="tip">${t('s0_tip')}</div>
+      <button class="quick-mode-card" onclick="jumpToAutoplay()">
+        <div class="quick-mode-icon">${ICONS.play}</div>
+        <div class="qm-text">
+          <h4>${t('quick_mode_title')}</h4>
+          <p>${t('quick_mode_p')}</p>
+        </div>
+        <div class="qm-arrow">→</div>
+      </button>
+    </div>`,
+
+  () => {
+    const dp = dateParts(state.ic);
+    const pb = state.ic.slice(6,8);
+    const seq = state.ic.slice(8,11);
+    const last = state.ic[11];
+    const age = calcAge(dp.year, parseInt(dp.mm,10), parseInt(dp.dd,10));
+    const placeName = getPlaceName(pb);
+    let statesHTML = '<div class="states-section-title">' + t('s1_malaysian_states') + '</div><table class="states-table">';
+    Object.entries(STATES).forEach(([code, v]) => {
+      statesHTML += `<tr${code === pb ? ' class="current"' : ''}><td>${code}</td><td>${v[state.lang] || v.en}</td></tr>`;
+    });
+    statesHTML += '</table><div class="states-section-title">' + t('s1_foreign_codes') + '</div><table class="states-table">';
+    Object.entries(FOREIGN).forEach(([code, v]) => {
+      statesHTML += `<tr${code === pb ? ' class="current"' : ''}><td>${code}</td><td>${v[state.lang] || v.en}</td></tr>`;
+    });
+    statesHTML += '</table>';
+    return `
+      <div class="step">
+        <h2>${t('s1_h')}</h2>
+        <p>${t('s1_p')}</p>
+        ${icDigitsHTML(state.ic)}
+        <div class="ic-labels">
+          <span class="ic-label date">${t('s1_birthday')}</span>
+          <span class="ic-label place">${t('s1_place')}</span>
+          <span class="ic-label seq">${t('s1_seq')}</span>
+          <span class="ic-label chk">${t('s2_job1_title')}</span>
+        </div>
+        <div class="info-card">
+          <h3>${state.ic.slice(0,6)} — ${t('s1_birthday')}</h3>
+          <p>${t('s1_born_on')} <strong>${dp.full}</strong>${age !== null ? ` <span class="age-pill">${age} ${t('s1_years_old')}</span>` : ''}</p>
+        </div>
+        <div class="info-card">
+          <h3>${pb} — ${t('s1_place')}</h3>
+          <p><strong>${pb}</strong> — ${placeName}</p>
+          <p style="font-size:12px;color:var(--text3);margin-top:4px">${t('s1_place_meaning')}</p>
+          <button class="expand-btn" onclick="toggleStates()">${state.statesOpen ? t('s1_hide_codes') : t('s1_see_codes')} ${state.statesOpen ? '↑' : '↓'}</button>
+          <div class="states-panel ${state.statesOpen ? 'open' : ''}">${statesHTML}</div>
+        </div>
+        <div class="info-card">
+          <h3>${seq} — ${t('s1_seq')}</h3>
+          <p>${t('s1_seq_meaning')}</p>
+        </div>
+        <div class="info-card accent">
+          <h3>${last} — ${t('s1_special')}</h3>
+          <p>${t('s1_special_meaning')}</p>
+        </div>
+      </div>`;
+  },
+
+  () => {
+    const last = parseInt(state.ic[11], 10);
+    const isMale = last % 2 === 1;
+    const oddDigits = [1, 3, 5, 7, 9];
+    const evenDigits = [0, 2, 4, 6, 8];
+    return `
+      <div class="step">
+        <h2>${t('s2_h')}</h2>
+        <p>${tt('s2_p', {LAST: last})}</p>
+        <div class="dual-grid">
+          <div class="dual-card">
+            <span class="tag">${t('s2_job1')}</span>
+            <h4>${t('s2_job1_title')}</h4>
+            <p>${t('s2_odd_male')}<br>${t('s2_even_female')}</p>
+          </div>
+          <div class="dual-card">
+            <span class="tag">${t('s2_job2')}</span>
+            <h4>${t('s2_job2_title')}</h4>
+            <p>${t('s2_job2_p')}</p>
+          </div>
+        </div>
+        <div style="text-align:center;font-size:13px;font-weight:500;color:var(--text2);margin:16px 0 8px">${t('s2_your_last')} <span style="font-family:monospace;font-size:20px;color:var(--chk);font-weight:700">${last}</span></div>
+        <div class="gender-grid">
+          <div class="gender-col male">
+            <span class="label">${t('s2_all_odd')}</span>
+            <div class="digit-row-mini">
+              ${oddDigits.map(n => `<span class="digit-mini ${n === last ? 'active-m' : ''}">${n}</span>`).join('')}
+            </div>
+            ${isMale ? `<div class="gender-result">${last} ${t('s2_result_male')}</div>` : ''}
+          </div>
+          <div class="gender-col female">
+            <span class="label">${t('s2_all_even')}</span>
+            <div class="digit-row-mini">
+              ${evenDigits.map(n => `<span class="digit-mini ${n === last ? 'active-f' : ''}">${n}</span>`).join('')}
+            </div>
+            ${!isMale ? `<div class="gender-result">${last} ${t('s2_result_female')}</div>` : ''}
+          </div>
+        </div>
+        <p>${t('s2_ready')}</p>
+      </div>`;
+  },
+
+  () => `
+    <div class="step">
+      <div class="step-badge">${t('step')} 1</div>
+      <h2>${t('s3_h')}</h2>
+      <p>${t('s3_p1')}</p>
+      <p>${t('s3_p2')}</p>
+      ${icDigitsHTML(state.ic, { dim: [11] })}
+      <p style="text-align:center;font-size:12px;color:var(--text3)"><em>${t('s3_greyed')}</em></p>
+      <div class="info-card">
+        <h3>${t('s3_eleven')}</h3>
+        <p style="font-family:'JetBrains Mono',monospace;font-size:17px;color:var(--text);letter-spacing:2px;font-weight:700;margin-top:4px">${state.ic.slice(0,11).split('').join(' ')}</p>
+      </div>
+    </div>`,
+
+  () => {
+    const d = calc(state.ic);
+    return `
+      <div class="step">
+        <div class="step-badge">${t('step')} 2</div>
+        <h2>${t('s4_h')}</h2>
+        <p>${t('s4_p')}</p>
+        <div class="flip-container">
+          <div class="flip-section-title">${t('s4_original')}</div>
+          <div class="flip-row" id="flipSource">
+            ${d.first11.map((digit, i) => `<span class="digit mono" data-src="${i}">${digit}</span>`).join('')}
+          </div>
+          <div class="flip-arrow">↓</div>
+          <div class="flip-section-title">${t('s4_flipped')}</div>
+          ${emptySlotsHTML(11)}
+          <div class="play-btn-wrap">
+            <button class="play-btn" id="playFlipBtn" onclick="playFlip()">${ICONS.play} ${state.flipPlayed ? t('s4_replay') : t('s4_play')}</button>
+          </div>
+        </div>
+        <div class="tip">${t('s4_tip')}</div>
+      </div>`;
+  },
+
+  () => {
+    let cells = `<div class="cell label">${t('s5_pos')}</div>`;
+    for (let i = 1; i <= 11; i++) cells += `<div class="cell position">${i}</div>`;
+    cells += `<div class="cell label">${t('s5_weight')}</div>`;
+    WEIGHTS.forEach(w => { cells += `<div class="cell weight">${w}</div>`; });
+    return `
+      <div class="step">
+        <div class="step-badge">${t('step')} 3</div>
+        <h2>${t('s5_h')}</h2>
+        <p>${t('s5_p')}</p>
+        <div class="weights-box"><div class="weights-table">${cells}</div></div>
+        <div class="tip">${t('s5_memorize')}</div>
+        <p style="font-size:13px;color:var(--text3)"><em>${t('s5_nerd')}</em></p>
+      </div>`;
+  },
+
+  () => {
+    const d = calc(state.ic);
+    let rows = '';
+    d.reversed.forEach((digit, i) => {
+      const revealed = state.revealedMults.has(i);
+      rows += `
+        <div class="mult-row ${revealed ? 'revealed' : ''}" data-idx="${i}" onclick="revealMult(${i})">
+          <span class="digit-val">${digit}</span>
+          <span class="op">×</span>
+          <span class="weight-val">${WEIGHTS[i]}</span>
+          <span class="op">=</span>
+          <span class="result-val">${revealed ? d.products[i] : '?'}</span>
+        </div>`;
+    });
+    return `
+      <div class="step">
+        <div class="step-badge">${t('step')} 4</div>
+        <h2>${t('s6_h')}</h2>
+        <p>${t('s6_p')}</p>
+        <div class="mult-list">${rows}</div>
+        <button class="reveal-all-btn" onclick="revealAllMults()">${t('s6_reveal_all')}</button>
+      </div>`;
+  },
+
+  () => {
+    const d = calc(state.ic);
+    return `
+      <div class="step">
+        <div class="step-badge">${t('step')} 5</div>
+        <h2>${t('s7_h')}</h2>
+        <p>${t('s7_p')}</p>
+        <div class="calc-display">
+          <div class="expression">${d.products.join(' + ')}</div>
+          <div class="equals-label">${t('s7_equals')}</div>
+          <div class="total">${d.sum}</div>
+        </div>
+        <p>${tt('s7_p2', {SUM: d.sum})}</p>
+      </div>`;
+  },
+
+  () => {
+    const d = calc(state.ic);
+    const q = Math.floor(d.sum / 11);
+    return `
+      <div class="step">
+        <div class="step-badge">${t('step')} 6</div>
+        <h2>${t('s8_h')}</h2>
+        <p>${tt('s8_p', {SUM: d.sum})}</p>
+        <div class="calc-display">
+          <div class="div-line">${d.sum} ÷ 11 = ${q} <span style="color:var(--text3);font-size:13px">r</span> <span class="highlight-num">${d.remainder}</span></div>
+          <div class="div-note">${t('s8_because')} ${q} × 11 = ${q * 11}, ${t('s8_and')} ${d.sum} − ${q * 11} = ${d.remainder}</div>
+        </div>
+        <p>${tt('s8_p2', {REM: d.remainder})}</p>
+      </div>`;
+  },
+
+  () => {
+    const d = calc(state.ic);
+    const raw = 12 - d.remainder;
+    const needsMod = raw >= 11;
+    return `
+      <div class="step">
+        <div class="step-badge">${t('step')} 7</div>
+        <h2>${t('s9_h')}</h2>
+        <p>${t('s9_p')}</p>
+        <div class="formula-display">
+          <div class="formula-line">12 − <span class="var">${d.remainder}</span> = ${raw}</div>
+          <div class="formula-line">${raw} mod 11 = <span class="result">${d.predicted}</span></div>
+          <div class="formula-note">${needsMod ? t('s9_mod_note') : t('s9_mod_nope')}</div>
+        </div>
+        <p>${t('s9_predicted')} <strong style="font-family:monospace;font-size:22px;color:var(--accent)">${d.predicted}</strong></p>
+        <p>${t('s9_compare')}</p>
+      </div>`;
+  },
+
+  () => {
+    const d = calc(state.ic);
+    const symbol = d.matches ? '✓' : '✗';
+    const titleCls = d.matches ? '' : 'fail';
+    const boxCls = d.matches ? 'match' : 'fail';
+    const genderText = d.isMale ? t('s2_result_male') : t('s2_result_female');
+    return `
+      <div class="step">
+        <div class="reveal" id="revealArea">
+          <div class="reveal-match" style="color:${d.matches ? 'var(--valid)' : 'var(--invalid)'}">${symbol}</div>
+          <div class="reveal-title ${titleCls}">${d.matches ? t('s10_match') : t('s10_no_match')}</div>
+        </div>
+        <div class="reveal-comparison">
+          <div class="reveal-box ${boxCls}">
+            <div class="label">${t('s10_we_predicted')}</div>
+            <div class="value">${d.predicted}</div>
+          </div>
+          <div class="reveal-box ${boxCls}">
+            <div class="label">${t('s10_actual')}</div>
+            <div class="value">${d.last}</div>
+          </div>
+        </div>
+        ${d.matches ? `
+          <div class="info-card valid">
+            <h3>${t('s10_valid_title')}</h3>
+            <p>${t('s10_valid_p')}</p>
+          </div>
+          <div class="info-card">
+            <h3>${t('s10_bonus_title')}</h3>
+            <p>${tt('s10_bonus_p', {LAST: d.last})} ${genderText}</p>
+          </div>
+        ` : `
+          <div class="info-card" style="background:var(--invalid-bg);border-color:var(--invalid)">
+            <h3>${t('s10_fail_title')}</h3>
+            <p>${t('s10_fail_p')}</p>
+          </div>
+        `}
+        <p style="text-align:center;margin-top:14px;font-weight:500">${t('s10_next')}</p>
+      </div>`;
+  },
+
+  () => {
+    const d = calc(state.ic);
+    const q = Math.floor(d.sum / 11);
+    const raw = 12 - d.remainder;
+    let multCells = '';
+    d.reversed.forEach((digit, i) => {
+      multCells += `<div class="ap-mult-cell" data-cell="${i}">${digit}<span class="inline-op">×</span>${WEIGHTS[i]}<span class="inline-op">=</span>${d.products[i]}</div>`;
+    });
+    return `
+      <div class="step">
+        <h2>${t('sA_h')}</h2>
+        <p>${t('sA_p')}</p>
+        <div id="autoplayRoot">
+          <div class="ap-caption-bar">
+            <div class="ap-caption" id="apCaption">${t('sA_cap_ready')}</div>
+            <div class="ap-time-progress"><div class="ap-time-bar" id="apTimeBar"></div></div>
+          </div>
+          <div class="ap-phase" data-phase="0">
+            <div class="ap-phase-label">${t('sA_phase_digits')}</div>
+            ${plainDigitsHTML(d.first11)}
+          </div>
+          <div class="ap-phase" data-phase="1">
+            <div class="ap-phase-label">${t('sA_phase_flipped')}</div>
+            ${plainDigitsHTML(d.reversed)}
+          </div>
+          <div class="ap-phase" data-phase="2">
+            <div class="ap-phase-label">${t('sA_phase_mult')}</div>
+            <div class="ap-mult-grid" id="apMultGrid">${multCells}</div>
+          </div>
+          <div class="ap-phase" data-phase="3">
+            <div class="ap-phase-label">${t('sA_phase_sum')}</div>
+            <div class="calc-display">
+              <div class="expression">${d.products.join(' + ')}</div>
+              <div class="equals-label">${t('s7_equals')}</div>
+              <div class="total">${d.sum}</div>
+            </div>
+          </div>
+          <div class="ap-phase" data-phase="4">
+            <div class="ap-phase-label">${t('sA_phase_divide')}</div>
+            <div class="calc-display">
+              <div class="div-line">${d.sum} ÷ 11 = ${q} r <span class="highlight-num">${d.remainder}</span></div>
+            </div>
+          </div>
+          <div class="ap-phase" data-phase="5">
+            <div class="ap-phase-label">${t('sA_phase_formula')}</div>
+            <div class="formula-display">
+              <div class="formula-line">12 − ${d.remainder} = ${raw}</div>
+              <div class="formula-line">${raw} mod 11 = <span class="result">${d.predicted}</span></div>
+            </div>
+          </div>
+          <div class="ap-phase" data-phase="6">
+            <div class="ap-phase-label">${t('sA_phase_reveal')}</div>
+            <div class="reveal-comparison">
+              <div class="reveal-box ${d.matches ? 'match' : 'fail'}">
+                <div class="label">${t('s10_we_predicted')}</div>
+                <div class="value">${d.predicted}</div>
+              </div>
+              <div class="reveal-box ${d.matches ? 'match' : 'fail'}">
+                <div class="label">${t('s10_actual')}</div>
+                <div class="value">${d.last}</div>
+              </div>
+            </div>
+          </div>
+          <div class="ap-controls">
+            <button class="ap-control-btn" id="apPlayBtn" onclick="playAutoplay()">${ICONS.play} ${t('sA_play')}</button>
+          </div>
+        </div>
+      </div>`;
+  },
+
+  () => `
+    <div class="step">
+      <h2>${t('s11_h')}</h2>
+      <p>${t('s11_p')}</p>
+      <div class="features-grid">
+        <div class="feature-card"><div class="feature-icon">${ICONS.laser}</div><h4>${t('s11_f1_title')}</h4><p>${t('s11_f1_p')}</p></div>
+        <div class="feature-card"><div class="feature-icon">${ICONS.rainbow}</div><h4>${t('s11_f2_title')}</h4><p>${t('s11_f2_p')}</p></div>
+        <div class="feature-card"><div class="feature-icon">${ICONS.pattern}</div><h4>${t('s11_f3_title')}</h4><p>${t('s11_f3_p')}</p></div>
+        <div class="feature-card"><div class="feature-icon">${ICONS.ghost}</div><h4>${t('s11_f4_title')}</h4><p>${t('s11_f4_p')}</p></div>
+        <div class="feature-card"><div class="feature-icon">${ICONS.uv}</div><h4>${t('s11_f5_title')}</h4><p>${t('s11_f5_p')}</p></div>
+        <div class="feature-card"><div class="feature-icon">${ICONS.chip}</div><h4>${t('s11_f6_title')}</h4><p>${t('s11_f6_p')}</p></div>
+        <div class="feature-card"><div class="feature-icon">${ICONS.copy}</div><h4>${t('s11_f7_title')}</h4><p>${t('s11_f7_p')}</p></div>
+        <div class="feature-card highlight"><div class="feature-icon">${ICONS.math}</div><h4>${t('s11_f8_title')}</h4><p>${t('s11_f8_p')}</p></div>
+      </div>
+      <p>${t('s11_p2')}</p>
+    </div>`,
+
+  () => `
+    <div class="step">
+      <h2>${t('s12_h')}</h2>
+      <p>${t('s12_p')}</p>
+      <div class="input-group">
+        <label>${t('s12_label')}</label>
+        <input type="text" id="customIC" maxlength="12" placeholder="850101135029" inputmode="numeric" oninput="checkCustom(this.value)" autocomplete="off">
+        <div class="quick-result" id="quickResult"></div>
+      </div>
+      <button class="btn btn-filled" id="useCustomBtn" onclick="useCustomIC()" style="display:none">${t('s12_walk')}</button>
+      <button class="btn btn-outline" onclick="restartDefault()">${t('s12_restart_default')}</button>
+      <div class="disclaimer">
+        <strong>${t('s12_disclaimer_title')}</strong><br>${t('s12_disclaimer')}
+      </div>
+      <p style="text-align:center;margin:12px 0 4px">
+        <a class="wiki-link" href="https://en.wikipedia.org/wiki/ISO/IEC_7064" target="_blank" rel="noopener">${t('s12_learn_more')} →</a>
+      </p>
+      <p style="text-align:center;font-size:12px;color:var(--text3);margin-top:20px">${t('s12_made_with')}</p>
+    </div>`
+];
+
+const stage = document.getElementById('stage');
+const progressBar = document.getElementById('progressBar');
+const stepNum = document.getElementById('stepNum');
+const stepTotal = document.getElementById('stepTotal');
+const backBtn = document.getElementById('backBtn');
+const nextBtn = document.getElementById('nextBtn');
+const backText = document.getElementById('backText');
+const nextText = document.getElementById('nextText');
+const stepLabel = document.getElementById('stepLabel');
+const ofLabel = document.getElementById('ofLabel');
+const brandTitle = document.getElementById('brandTitle');
+const brandSubtitle = document.getElementById('brandSubtitle');
+const kbdHintText = document.getElementById('kbdHintText');
+
+stepTotal.textContent = steps.length;
+
+function clearAutoplayTimers() {
+  state.autoplayTimers.forEach(id => clearTimeout(id));
+  state.autoplayTimers = [];
+  if (state.autoplayRAF) { cancelAnimationFrame(state.autoplayRAF); state.autoplayRAF = null; }
+}
+
+function render() {
+  clearAutoplayTimers();
+  stopSpeech();
+  stage.innerHTML = steps[state.step]();
+  const pct = ((state.step + 1) / steps.length) * 100;
+  progressBar.style.width = pct + '%';
+  stepNum.textContent = state.step + 1;
+  backBtn.disabled = state.step === 0;
+  
+  brandTitle.textContent = t('brand_title');
+  brandSubtitle.textContent = t('brand_subtitle');
+  stepLabel.textContent = t('step');
+  ofLabel.textContent = t('of');
+  backText.textContent = t('back');
+  kbdHintText.textContent = t('kbd_hint');
+  
+  if (state.step === 0) nextText.textContent = t('lets_go');
+  else if (state.step === steps.length - 1) nextText.textContent = t('start_over');
+  else if (state.step === steps.length - 2) nextText.textContent = t('try_own');
+  else nextText.textContent = t('next');
+  
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  
+  if (state.step === 4 && !state.flipPlayed) setTimeout(() => playFlip(), 400);
+  
+  if (state.step === 10) {
+    const d = calc(state.ic);
+    if (d.matches) setTimeout(() => launchConfetti(document.getElementById('revealArea')), 300);
+  }
+  
+  if (state.step === AUTOPLAY_STEP) {
+    setTimeout(() => playAutoplay(), 500);
+  } else {
+    // Speak step intro after brief delay (for non-autoplay steps)
+    if (state.voiceEnabled) {
+      setTimeout(() => speak(getStepSpeech()), 450);
+    }
+  }
+}
+
+function goNext() {
+  if (state.step < steps.length - 1) {
+    state.step++;
+    if (state.step === 6) state.revealedMults.clear();
+    if (state.step === 4) state.flipPlayed = false;
+    render();
+  } else {
+    state.step = 0;
+    state.revealedMults.clear();
+    state.flipPlayed = false;
+    render();
+  }
+}
+
+function goBack() {
+  if (state.step > 0) {
+    state.step--;
+    if (state.step === 4) state.flipPlayed = false;
+    render();
+  }
+}
+
+nextBtn.addEventListener('click', goNext);
+backBtn.addEventListener('click', goBack);
+
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT') return;
+  if (e.key === 'ArrowRight') { e.preventDefault(); goNext(); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); goBack(); }
+});
+
+document.getElementById('progressWrap').addEventListener('click', (e) => {
+  const rect = document.querySelector('.progress').getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const pct = Math.max(0, Math.min(1, x / rect.width));
+  const target = Math.min(steps.length - 1, Math.floor(pct * steps.length));
+  state.step = target;
+  state.revealedMults.clear();
+  state.flipPlayed = false;
+  render();
+});
+
+// ============ THEME ============
+function applyTheme() {
+  document.documentElement.setAttribute('data-theme', state.theme);
+  localStorage.setItem('ic_theme', state.theme);
+  const btn = document.getElementById('themeBtn');
+  btn.innerHTML = state.theme === 'dark' ? ICONS.sun : ICONS.moon;
+}
+
+document.getElementById('themeBtn').addEventListener('click', () => {
+  state.theme = state.theme === 'dark' ? 'light' : 'dark';
+  applyTheme();
+});
+
+applyTheme();
+
+// ============ VOICE TOGGLE ============
+function updateVoiceButton() {
+  const btn = document.getElementById('voiceBtn');
+  btn.innerHTML = state.voiceEnabled ? ICONS.volumeOn : ICONS.volumeOff;
+  btn.classList.toggle('active', state.voiceEnabled);
+}
+
+function showVoiceHint(key) {
+  const hint = document.getElementById('voiceHint');
+  hint.innerHTML = t(key);
+  hint.classList.add('show');
+  clearTimeout(hint._hideTimer);
+  hint._hideTimer = setTimeout(() => hint.classList.remove('show'), 3000);
+}
+
+document.getElementById('voiceBtn').addEventListener('click', () => {
+  if (!SPEECH_SUPPORTED) {
+    showVoiceHint('voice_unavailable');
+    return;
+  }
+  state.voiceEnabled = !state.voiceEnabled;
+  localStorage.setItem('ic_voice', state.voiceEnabled ? '1' : '0');
+  updateVoiceButton();
+  
+  if (state.voiceEnabled) {
+    showVoiceHint('voice_on_hint');
+    // Speak current step to confirm
+    setTimeout(() => speak(getStepSpeech()), 100);
+  } else {
+    showVoiceHint('voice_off_hint');
+    stopSpeech();
+  }
+});
+
+updateVoiceButton();
+
+// ============ LANGUAGE ============
+document.getElementById('langSwitcher').addEventListener('click', (e) => {
+  const btn = e.target.closest('.lang-btn');
+  if (!btn) return;
+  const lang = btn.dataset.lang;
+  state.lang = lang;
+  localStorage.setItem('ic_lang', lang);
+  document.body.classList.toggle('lang-zh', lang === 'zh');
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+  render();
+});
+
+document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === state.lang));
+document.body.classList.toggle('lang-zh', state.lang === 'zh');
+
+// ============ INTERACTIVE ============
+window.toggleStates = function() { state.statesOpen = !state.statesOpen; render(); };
+
+window.jumpToAutoplay = function() {
+  state.step = AUTOPLAY_STEP;
+  render();
+};
+
+window.revealMult = function(idx) {
+  state.revealedMults.add(idx);
+  const row = document.querySelector(`.mult-row[data-idx="${idx}"]`);
+  if (row) {
+    const d = calc(state.ic);
+    row.classList.add('revealed');
+    row.querySelector('.result-val').textContent = d.products[idx];
+  }
+};
+
+window.revealAllMults = function() {
+  const d = calc(state.ic);
+  for (let i = 0; i < 11; i++) state.revealedMults.add(i);
+  document.querySelectorAll('.mult-row').forEach(row => {
+    const idx = parseInt(row.dataset.idx, 10);
+    row.classList.add('revealed');
+    row.querySelector('.result-val').textContent = d.products[idx];
+  });
+};
+
+window.playFlip = function() {
+  const d = calc(state.ic);
+  const target = document.getElementById('flipTarget');
+  const source = document.getElementById('flipSource');
+  const playBtn = document.getElementById('playFlipBtn');
+  if (!target || !source) return;
+  const slots = target.querySelectorAll('.digit');
+  const sources = source.querySelectorAll('.digit');
+  slots.forEach(s => { s.textContent = ''; s.classList.add('empty'); s.classList.remove('appearing'); });
+  sources.forEach(s => s.classList.remove('sourcing'));
+  if (playBtn) playBtn.disabled = true;
+  const delay = 320;
+  d.reversed.forEach((digit, i) => {
+    const srcIdx = 10 - i;
+    setTimeout(() => sources[srcIdx].classList.add('sourcing'), i * delay);
+    setTimeout(() => {
+      sources[srcIdx].classList.remove('sourcing');
+      slots[i].textContent = digit;
+      slots[i].classList.remove('empty');
+      slots[i].classList.add('appearing');
+    }, i * delay + 180);
+  });
+  setTimeout(() => {
+    state.flipPlayed = true;
+    if (playBtn) {
+      playBtn.disabled = false;
+      playBtn.innerHTML = ICONS.replay + ' ' + t('s4_replay');
+    }
+  }, 11 * delay + 300);
+};
+
+window.playAutoplay = function() {
+  clearAutoplayTimers();
+  stopSpeech();
+  
+  const d = calc(state.ic);
+  const root = document.getElementById('autoplayRoot');
+  if (!root) return;
+  
+  const phases = root.querySelectorAll('.ap-phase');
+  const cells = root.querySelectorAll('.ap-mult-cell');
+  const caption = document.getElementById('apCaption');
+  const timeBar = document.getElementById('apTimeBar');
+  const playBtn = document.getElementById('apPlayBtn');
+  
+  phases.forEach(p => p.classList.remove('visible'));
+  cells.forEach(c => c.classList.remove('visible'));
+  if (timeBar) timeBar.style.width = '0%';
+  if (playBtn) playBtn.disabled = true;
+  
+  setTimeout(() => root.scrollIntoView({behavior: 'smooth', block: 'start'}), 50);
+  
+  const script = [
+    { t: 300,   phase: 0, cap: t('sA_cap_intro') },
+    { t: 2200,  phase: 1, cap: t('sA_cap_flip') },
+    { t: 4400,  phase: 2, cap: t('sA_cap_mult') },
+    { t: 9200,  phase: 3, cap: t('sA_cap_sum') },
+    { t: 11800, phase: 4, cap: t('sA_cap_divide') },
+    { t: 14000, phase: 5, cap: t('sA_cap_formula') },
+    { t: 16200, phase: 6, cap: d.matches ? t('sA_cap_reveal_match') : t('sA_cap_reveal_fail') }
+  ];
+  
+  const TOTAL = 18500;
+  
+  script.forEach(s => {
+    state.autoplayTimers.push(setTimeout(() => {
+      if (phases[s.phase]) phases[s.phase].classList.add('visible');
+      if (caption) {
+        caption.style.opacity = '0';
+        setTimeout(() => { caption.textContent = s.cap; caption.style.opacity = '1'; }, 150);
+      }
+      // Narrate this phase if voice enabled
+      if (state.voiceEnabled) speak(s.cap);
+      setTimeout(() => {
+        const visible = phases[s.phase];
+        if (visible) visible.scrollIntoView({behavior: 'smooth', block: 'center'});
+      }, 200);
+    }, s.t));
+  });
+  
+  for (let i = 0; i < 11; i++) {
+    state.autoplayTimers.push(setTimeout(() => {
+      if (cells[i]) cells[i].classList.add('visible');
+    }, 4600 + i * 380));
+  }
+  
+  const startTime = Date.now();
+  function tickBar() {
+    const elapsed = Date.now() - startTime;
+    const pct = Math.min(100, (elapsed / TOTAL) * 100);
+    if (timeBar) timeBar.style.width = pct + '%';
+    if (elapsed < TOTAL) state.autoplayRAF = requestAnimationFrame(tickBar);
+  }
+  state.autoplayRAF = requestAnimationFrame(tickBar);
+  
+  state.autoplayTimers.push(setTimeout(() => {
+    if (playBtn) {
+      playBtn.disabled = false;
+      playBtn.innerHTML = ICONS.replay + ' ' + t('sA_replay');
+    }
+    if (d.matches) {
+      const revealPhase = phases[6];
+      if (revealPhase) launchConfetti(revealPhase);
+    }
+  }, TOTAL + 500));
+};
+
+window.checkCustom = function(val) {
+  const clean = val.replace(/\D/g, '');
+  const resultEl = document.getElementById('quickResult');
+  const useBtn = document.getElementById('useCustomBtn');
+  if (clean.length !== 12) {
+    resultEl.classList.remove('show');
+    if (useBtn) useBtn.style.display = 'none';
+    return;
+  }
+  const d = calc(clean);
+  resultEl.classList.add('show');
+  const genderText = d.isMale ? t('male') : t('female');
+  if (d.matches) {
+    resultEl.className = 'quick-result show valid';
+    resultEl.innerHTML = tt('s12_valid', {PRED: d.predicted, LAST: d.last, GENDER: genderText});
+  } else {
+    resultEl.className = 'quick-result show invalid';
+    resultEl.innerHTML = tt('s12_invalid', {PRED: d.predicted, LAST: d.last});
+  }
+  if (useBtn) useBtn.style.display = '';
+};
+
+window.useCustomIC = function() {
+  const input = document.getElementById('customIC');
+  if (!input) return;
+  const clean = input.value.replace(/\D/g, '');
+  if (clean.length !== 12) return;
+  state.ic = clean;
+  state.step = 0;
+  state.revealedMults.clear();
+  state.flipPlayed = false;
+  render();
+};
+
+window.restartDefault = function() {
+  state.ic = DEFAULT_IC;
+  state.step = 0;
+  state.revealedMults.clear();
+  state.flipPlayed = false;
+  render();
+};
+
+function launchConfetti(area) {
+  if (!area) return;
+  area.style.position = 'relative';
+  const colors = ['#2563eb', '#7c3aed', '#059669', '#ea580c', '#db2777', '#f59e0b'];
+  for (let i = 0; i < 20; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = (50 + (Math.random() - 0.5) * 90) + '%';
+    piece.style.top = '20px';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    piece.style.animationDelay = (Math.random() * 0.2) + 's';
+    piece.style.animationDuration = (1.4 + Math.random() * 0.6) + 's';
+    area.appendChild(piece);
+    setTimeout(() => piece.remove(), 2200);
+  }
+}
+
+render();
+</script>
+</body>
+</html>
